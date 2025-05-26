@@ -1,7 +1,7 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import ContentBadge from "@/components/ContentBadge";
 
 const categories = [
   {
@@ -10,7 +10,9 @@ const categories = [
     ebooksCount: "45+ e-books",
     topics: ["Projetos Residenciais", "Arquitetura Comercial", "Sustentabilidade", "História da Arquitetura"],
     color: "bg-blue-50 border-blue-200",
-    badge: "bg-blue-100 text-blue-800"
+    badge: "bg-blue-100 text-blue-800",
+    freeContent: 15,
+    premiumContent: 30
   },
   {
     title: "Design de Interiores",
@@ -18,7 +20,9 @@ const categories = [
     ebooksCount: "38+ e-books",
     topics: ["Ambientação", "Paleta de Cores", "Mobiliário", "Iluminação"],
     color: "bg-emerald-50 border-emerald-200",
-    badge: "bg-emerald-100 text-emerald-800"
+    badge: "bg-emerald-100 text-emerald-800",
+    freeContent: 12,
+    premiumContent: 26
   },
   {
     title: "Marcenaria",
@@ -26,7 +30,9 @@ const categories = [
     ebooksCount: "29+ e-books",
     topics: ["Técnicas", "Projetos de Móveis", "Madeiras", "Acabamentos"],
     color: "bg-amber-50 border-amber-200",
-    badge: "bg-amber-100 text-amber-800"
+    badge: "bg-amber-100 text-amber-800",
+    freeContent: 10,
+    premiumContent: 19
   }
 ];
 
@@ -55,9 +61,20 @@ const EbookCategories = () => {
                     {category.ebooksCount}
                   </Badge>
                 </div>
-                <p className="text-gray-600 text-sm leading-relaxed">
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
                   {category.description}
                 </p>
+                
+                <div className="flex gap-2 mb-4">
+                  <div className="flex items-center gap-1">
+                    <ContentBadge type="free" />
+                    <span className="text-xs text-gray-600">{category.freeContent}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <ContentBadge type="premium" />
+                    <span className="text-xs text-gray-600">{category.premiumContent}</span>
+                  </div>
+                </div>
               </CardHeader>
               
               <CardContent className="pt-0">
@@ -89,13 +106,18 @@ const EbookCategories = () => {
               Pronto para começar?
             </h3>
             <p className="text-gray-600 mb-6">
-              Tenha acesso completo a todos os e-books e novos lançamentos mensais
+              Comece gratuitamente e tenha acesso aos melhores conteúdos de arquitetura e design
             </p>
-            <Button size="lg" className="bg-gray-900 hover:bg-gray-800">
-              Iniciar Assinatura Premium
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button size="lg" variant="outline">
+                Começar Grátis
+              </Button>
+              <Button size="lg" className="bg-gray-900 hover:bg-gray-800">
+                Ver Planos Premium
+              </Button>
+            </div>
             <p className="text-sm text-gray-500 mt-4">
-              Cancele a qualquer momento • Sem compromisso
+              Sem cartão de crédito • Cancele a qualquer momento
             </p>
           </div>
         </div>

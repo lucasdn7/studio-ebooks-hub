@@ -20,16 +20,22 @@ const Header = () => {
             <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm">E-books</a>
             <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Vídeos</a>
             <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Categorias</a>
+            <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Planos</a>
             <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Sobre</a>
             <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Contato</a>
           </nav>
 
           <div className="flex items-center space-x-4">
+            <div className="hidden sm:flex items-center space-x-2">
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs">
+                Plano Gratuito
+              </Badge>
+            </div>
             <Button variant="outline" size="sm">
               Login
             </Button>
             <Button size="sm" className="bg-gray-900 hover:bg-gray-800">
-              Assinar
+              Upgrade
             </Button>
           </div>
         </div>

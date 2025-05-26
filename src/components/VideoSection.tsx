@@ -1,8 +1,8 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Play, Clock, Eye } from "lucide-react";
+import ContentBadge from "@/components/ContentBadge";
 
 const VideoSection = () => {
   const videos = [
@@ -14,7 +14,8 @@ const VideoSection = () => {
       views: "2.3k",
       thumbnail: "/placeholder.svg",
       author: "Mestre Carpinteiro",
-      description: "Aprenda as técnicas básicas essenciais para começar na marcenaria profissional."
+      description: "Aprenda as técnicas básicas essenciais para começar na marcenaria profissional.",
+      type: "free" as const
     },
     {
       id: 2,
@@ -24,7 +25,8 @@ const VideoSection = () => {
       views: "5.1k",
       thumbnail: "/placeholder.svg",
       author: "Studio Design",
-      description: "Conceitos fundamentais para criar ambientes harmoniosos e funcionais."
+      description: "Conceitos fundamentais para criar ambientes harmoniosos e funcionais.",
+      type: "free" as const
     },
     {
       id: 3,
@@ -34,7 +36,8 @@ const VideoSection = () => {
       views: "3.7k",
       thumbnail: "/placeholder.svg",
       author: "Arquiteto Verde",
-      description: "Estratégias para desenvolver projetos arquitetônicos sustentáveis."
+      description: "Estratégias para desenvolver projetos arquitetônicos sustentáveis.",
+      type: "premium" as const
     },
     {
       id: 4,
@@ -44,7 +47,8 @@ const VideoSection = () => {
       views: "1.8k",
       thumbnail: "/placeholder.svg",
       author: "Oficina Pro",
-      description: "Guia completo das ferramentas indispensáveis para o marceneiro."
+      description: "Guia completo das ferramentas indispensáveis para o marceneiro.",
+      type: "free" as const
     },
     {
       id: 5,
@@ -54,7 +58,8 @@ const VideoSection = () => {
       views: "4.2k",
       thumbnail: "/placeholder.svg",
       author: "Color Expert",
-      description: "Como escolher e combinar cores para criar ambientes únicos."
+      description: "Como escolher e combinar cores para criar ambientes únicos.",
+      type: "premium" as const
     },
     {
       id: 6,
@@ -64,7 +69,8 @@ const VideoSection = () => {
       views: "6.5k",
       thumbnail: "/placeholder.svg",
       author: "Micro Arquitetura",
-      description: "Soluções inteligentes para maximizar espaços pequenos."
+      description: "Soluções inteligentes para maximizar espaços pequenos.",
+      type: "free" as const
     }
   ];
 
@@ -115,6 +121,9 @@ const VideoSection = () => {
                   </div>
                   <div className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">
                     {video.duration}
+                  </div>
+                  <div className="absolute top-2 left-2">
+                    <ContentBadge type={video.type} />
                   </div>
                 </div>
               </div>
