@@ -1,6 +1,5 @@
 
 import { Button } from "@/components/ui/button";
-import { architecture } from "lucide-react";
 
 const Header = () => {
   return (
@@ -19,6 +18,7 @@ const Header = () => {
           
           <nav className="hidden md:flex items-center space-x-8">
             <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm">E-books</a>
+            <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Vídeos</a>
             <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Categorias</a>
             <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Sobre</a>
             <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Contato</a>

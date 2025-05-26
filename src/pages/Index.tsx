@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import EbookCategories from "@/components/EbookCategories";
+import VideoSection from "@/components/VideoSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -13,6 +14,7 @@ const Index = () => {
       <Header />
       <Hero />
       <EbookCategories />
+      <VideoSection />
       <Footer />
     </div>
   );
