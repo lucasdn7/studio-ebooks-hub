@@ -24,6 +24,7 @@ const Header = () => {
             <Link to="/ebooks" className="text-gray-700 hover:text-gray-900 font-medium text-sm">E-books</Link>
             <Link to="/ebook-bundles" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Pacotes</Link>
             <Link to="/categorias" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Categorias</Link>
+            <Link to="/noticias" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Notícias</Link>
             <Link to="/planos" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Planos</Link>
             <Link to="/sobre" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Sobre</Link>
             <Link to="/contato" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Contato</Link>

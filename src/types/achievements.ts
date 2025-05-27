@@ -45,7 +45,7 @@ export interface UserProgress {
   completedAchievements: Achievement[];
   pendingAchievements: Achievement[];
   certificates: Certificate[];
-  isPremuim: boolean;
+  isPremium: boolean;
   stats: {
     ebooksRead: number;
     commentsPosted: number;

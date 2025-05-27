@@ -13,6 +13,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import MemberArea from "./pages/MemberArea";
+import ConstructionNews from "./pages/ConstructionNews";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/ebooks" element={<Ebooks />} />
           <Route path="/ebook-bundles" element={<EbookBundles />} />
           <Route path="/categorias" element={<Categories />} />
+          <Route path="/noticias" element={<ConstructionNews />} />
           <Route path="/planos" element={<Plans />} />
           <Route path="/sobre" element={<About />} />
           <Route path="/contato" element={<Contact />} />
