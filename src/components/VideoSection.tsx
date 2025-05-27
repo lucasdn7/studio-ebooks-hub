@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Play, Clock, Eye } from "lucide-react";
 import ContentBadge from "@/components/ContentBadge";
+import { Link } from "react-router-dom";
 
 const VideoSection = () => {
   const videos = [
@@ -161,9 +162,11 @@ const VideoSection = () => {
         </div>
 
         <div className="text-center">
-          <Button variant="outline" size="lg" className="px-8">
-            Ver Todos os Vídeos
-          </Button>
+          <Link to="/videos">
+            <Button variant="outline" size="lg" className="px-8">
+              Ver Todos os Vídeos
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

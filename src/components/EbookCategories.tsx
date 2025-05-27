@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import ContentBadge from "@/components/ContentBadge";
+import { Link } from "react-router-dom";
 
 const categories = [
   {
@@ -89,12 +90,14 @@ const EbookCategories = () => {
                   </div>
                 </div>
                 
-                <Button 
-                  className="w-full group-hover:bg-gray-900 transition-colors" 
-                  variant="outline"
-                >
-                  Explorar {category.title}
-                </Button>
+                <Link to="/categorias">
+                  <Button 
+                    className="w-full group-hover:bg-gray-900 transition-colors" 
+                    variant="outline"
+                  >
+                    Explorar {category.title}
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           ))}
@@ -109,12 +112,16 @@ const EbookCategories = () => {
               Comece gratuitamente e tenha acesso aos melhores conteúdos de arquitetura e design
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button size="lg" variant="outline">
-                Começar Grátis
-              </Button>
-              <Button size="lg" className="bg-gray-900 hover:bg-gray-800">
-                Ver Planos Premium
-              </Button>
+              <Link to="/login">
+                <Button size="lg" variant="outline">
+                  Começar Grátis
+                </Button>
+              </Link>
+              <Link to="/planos">
+                <Button size="lg" className="bg-gray-900 hover:bg-gray-800">
+                  Ver Planos Premium
+                </Button>
+              </Link>
             </div>
             <p className="text-sm text-gray-500 mt-4">
               Sem cartão de crédito • Cancele a qualquer momento

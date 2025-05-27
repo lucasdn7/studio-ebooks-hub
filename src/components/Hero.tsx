@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -23,12 +24,16 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-gray-900 hover:bg-gray-800 px-8">
-              Começar Assinatura
-            </Button>
-            <Button variant="outline" size="lg" className="px-8">
-              Explorar Catálogo
-            </Button>
+            <Link to="/planos">
+              <Button size="lg" className="bg-gray-900 hover:bg-gray-800 px-8">
+                Começar Assinatura
+              </Button>
+            </Link>
+            <Link to="/ebooks">
+              <Button variant="outline" size="lg" className="px-8">
+                Explorar Catálogo
+              </Button>
+            </Link>
           </div>
           
           <div className="mt-12 text-sm text-gray-500">
