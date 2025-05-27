@@ -1,25 +1,23 @@
 
 import { useState, useEffect } from 'react';
-import { Achievement, UserProgress, UserTier, Certificate } from '@/types/achievements';
-import { achievementsData, userTiers, certificatesData } from '@/data/achievementsData';
+import { Achievement, UserProgress, UserTier } from '@/types/achievements';
+import { achievementsData, userTiers } from '@/data/achievementsData';
 import { toast } from '@/hooks/use-toast';
 
 export const useAchievements = () => {
   const [userProgress, setUserProgress] = useState<UserProgress>({
-    totalPoints: 385,
+    totalPoints: 285,
     currentTier: userTiers[1], // Silver
     nextTier: userTiers[2], // Gold
     completedAchievements: achievementsData.filter(a => a.completed),
     pendingAchievements: achievementsData.filter(a => !a.completed),
-    certificates: [],
     stats: {
       ebooksRead: 8,
+      videosWatched: 23,
       commentsPosted: 12,
       daysActive: 45,
       streakDays: 5,
-      loginCount: 67,
-      certificatesEarned: 0,
-      bundlesPurchased: 2
+      loginCount: 67
     }
   });
 
@@ -42,8 +40,8 @@ export const useAchievements = () => {
         case 'ebook-enthusiast':
           shouldComplete = newStats.ebooksRead >= achievement.requirement;
           break;
-        case 'ebook-master':
-          shouldComplete = newStats.ebooksRead >= achievement.requirement;
+        case 'video-marathon':
+          shouldComplete = newStats.videosWatched >= achievement.requirement;
           break;
         case 'community-helper':
           shouldComplete = newStats.commentsPosted >= achievement.requirement;
@@ -51,19 +49,7 @@ export const useAchievements = () => {
         case 'week-streak':
           shouldComplete = newStats.streakDays >= achievement.requirement;
           break;
-        case 'month-streak':
-          shouldComplete = newStats.streakDays >= achievement.requirement;
-          break;
-        case 'super-streak':
-          shouldComplete = newStats.streakDays >= achievement.requirement;
-          break;
-        case 'weekend-warrior':
-          shouldComplete = newStats.daysActive >= achievement.requirement;
-          break;
-        case 'arch-certified':
-        case 'design-certified':
-          // These would be completed when series is finished
-          break;
+        // Adicione mais casos conforme necessário
       }
       
       if (shouldComplete && !achievement.completed) {
@@ -77,7 +63,7 @@ export const useAchievements = () => {
       }
     });
 
-    // Show notifications for new achievements
+    // Mostrar notificações para novas conquistas
     newlyCompleted.forEach(achievement => {
       toast({
         title: "🎉 Nova Conquista Desbloqueada!",
@@ -91,7 +77,7 @@ export const useAchievements = () => {
       const newCurrentTier = getCurrentTier(newTotalPoints);
       const newNextTier = getNextTier(newCurrentTier);
       
-      // Check for tier upgrade
+      // Verificar se subiu de nível
       if (newCurrentTier.level !== userProgress.currentTier.level) {
         toast({
           title: "🚀 Parabéns! Você subiu de nível!",
