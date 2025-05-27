@@ -1,23 +1,26 @@
 
 import { useState, useEffect } from 'react';
-import { Achievement, UserProgress, UserTier } from '@/types/achievements';
-import { achievementsData, userTiers } from '@/data/achievementsData';
+import { Achievement, UserProgress, UserTier, Certificate } from '@/types/achievements';
+import { achievementsData, userTiers, certificatesData } from '@/data/achievementsData';
 import { toast } from '@/hooks/use-toast';
 
 export const useAchievements = () => {
   const [userProgress, setUserProgress] = useState<UserProgress>({
-    totalPoints: 285,
-    currentTier: userTiers[1], // Silver
-    nextTier: userTiers[2], // Gold
+    totalPoints: 185,
+    currentTier: userTiers[0], // Bronze
+    nextTier: userTiers[1], // Silver
     completedAchievements: achievementsData.filter(a => a.completed),
     pendingAchievements: achievementsData.filter(a => !a.completed),
+    certificates: certificatesData,
+    isPremuim: true, // Simulando usuário premium para mostrar conquistas
     stats: {
-      ebooksRead: 8,
-      videosWatched: 23,
-      commentsPosted: 12,
-      daysActive: 45,
-      streakDays: 5,
-      loginCount: 67
+      ebooksRead: 3,
+      commentsPosted: 5,
+      daysActive: 18,
+      streakDays: 3,
+      loginCount: 42,
+      bundlesPurchased: 0,
+      certificatesEarned: 0
     }
   });
 
@@ -34,22 +37,31 @@ export const useAchievements = () => {
     const newlyCompleted: Achievement[] = [];
     
     userProgress.pendingAchievements.forEach(achievement => {
+      // Verificar se é premium para acessar conquistas
+      if (achievement.premiumOnly && !userProgress.isPremuim) {
+        return;
+      }
+
       let shouldComplete = false;
       
       switch (achievement.id) {
         case 'ebook-enthusiast':
           shouldComplete = newStats.ebooksRead >= achievement.requirement;
           break;
-        case 'video-marathon':
-          shouldComplete = newStats.videosWatched >= achievement.requirement;
+        case 'bundle-collector':
+          shouldComplete = newStats.bundlesPurchased >= achievement.requirement;
           break;
         case 'community-helper':
           shouldComplete = newStats.commentsPosted >= achievement.requirement;
           break;
         case 'week-streak':
+        case 'month-streak':
           shouldComplete = newStats.streakDays >= achievement.requirement;
           break;
-        // Adicione mais casos conforme necessário
+        case 'first-certificate':
+        case 'certificate-master':
+          shouldComplete = newStats.certificatesEarned >= achievement.requirement;
+          break;
       }
       
       if (shouldComplete && !achievement.completed) {
@@ -98,6 +110,40 @@ export const useAchievements = () => {
     }
   };
 
+  const checkCertificateProgress = (ebookTitle: string) => {
+    const updatedCertificates = userProgress.certificates.map(cert => {
+      if (cert.requiredEbooks.includes(ebookTitle) && !cert.completedEbooks.includes(ebookTitle)) {
+        const newCompletedEbooks = [...cert.completedEbooks, ebookTitle];
+        const isCompleted = newCompletedEbooks.length === cert.requiredEbooks.length;
+        
+        if (isCompleted && !cert.completed) {
+          toast({
+            title: "🏆 Certificado Digital Conquistado!",
+            description: `Parabéns! Você ganhou o certificado: ${cert.title}`,
+            duration: 6000,
+          });
+          
+          // Atualizar stats de certificados
+          const newStats = {
+            ...userProgress.stats,
+            certificatesEarned: userProgress.stats.certificatesEarned + 1
+          };
+          checkForNewAchievements(newStats);
+        }
+        
+        return {
+          ...cert,
+          completedEbooks: newCompletedEbooks,
+          completed: isCompleted,
+          completedAt: isCompleted ? new Date() : cert.completedAt
+        };
+      }
+      return cert;
+    });
+
+    setUserProgress(prev => ({ ...prev, certificates: updatedCertificates }));
+  };
+
   const updateStats = (statType: keyof UserProgress['stats'], increment: number = 1) => {
     const newStats = {
       ...userProgress.stats,
@@ -111,6 +157,7 @@ export const useAchievements = () => {
     userProgress,
     updateStats,
     getCurrentTier,
-    getNextTier
+    getNextTier,
+    checkCertificateProgress
   };
 };

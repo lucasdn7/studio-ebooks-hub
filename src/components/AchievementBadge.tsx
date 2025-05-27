@@ -19,7 +19,19 @@ const AchievementBadge = ({ achievement, size = 'md' }: AchievementBadgeProps) =
       case 'social': return 'bg-green-100 text-green-800 border-green-200';
       case 'time': return 'bg-orange-100 text-orange-800 border-orange-200';
       case 'special': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'certificate': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getCategoryName = (category: Achievement['category']) => {
+    switch (category) {
+      case 'content': return 'Conteúdo';
+      case 'social': return 'Social';
+      case 'time': return 'Frequência';
+      case 'special': return 'Especial';
+      case 'certificate': return 'Certificado';
+      default: return category;
     }
   };
 
@@ -43,6 +55,11 @@ const AchievementBadge = ({ achievement, size = 'md' }: AchievementBadgeProps) =
         {achievement.completed && (
           <CheckCircle className="absolute -top-1 -right-1 w-4 h-4 text-green-500 bg-white rounded-full" />
         )}
+        {achievement.premiumOnly && (
+          <Badge variant="outline" className="absolute -bottom-1 bg-purple-100 text-purple-700 border-purple-200 text-xs">
+            Premium
+          </Badge>
+        )}
       </div>
     );
   }
@@ -56,10 +73,7 @@ const AchievementBadge = ({ achievement, size = 'md' }: AchievementBadgeProps) =
       <CardContent className="p-4 h-full flex flex-col justify-between">
         <div className="flex items-center justify-between mb-2">
           <Badge variant="outline" className={`text-xs ${getCategoryColor(achievement.category)}`}>
-            {achievement.category === 'content' && 'Conteúdo'}
-            {achievement.category === 'social' && 'Social'}
-            {achievement.category === 'time' && 'Frequência'}
-            {achievement.category === 'special' && 'Especial'}
+            {getCategoryName(achievement.category)}
           </Badge>
           {achievement.completed && (
             <CheckCircle className="w-5 h-5 text-green-500" />
@@ -72,6 +86,11 @@ const AchievementBadge = ({ achievement, size = 'md' }: AchievementBadgeProps) =
           </div>
           <h3 className="font-semibold text-gray-900 mb-1">{achievement.title}</h3>
           <p className="text-xs text-gray-600 mb-2">{achievement.description}</p>
+          {achievement.premiumOnly && (
+            <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs mb-2">
+              Exclusivo Premium
+            </Badge>
+          )}
         </div>
 
         <div className="space-y-2">

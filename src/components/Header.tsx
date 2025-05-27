@@ -22,12 +22,11 @@ const Header = () => {
           
           <nav className="hidden md:flex items-center space-x-8">
             <Link to="/ebooks" className="text-gray-700 hover:text-gray-900 font-medium text-sm">E-books</Link>
-            <Link to="/videos" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Vídeos</Link>
+            <Link to="/ebook-bundles" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Pacotes</Link>
             <Link to="/categorias" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Categorias</Link>
             <Link to="/planos" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Planos</Link>
             <Link to="/sobre" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Sobre</Link>
             <Link to="/contato" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Contato</Link>
-            <Link to="/noticias-construcao" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Notícias</Link>
           </nav>
 
           <div className="flex items-center space-x-4">

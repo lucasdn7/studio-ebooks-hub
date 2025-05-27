@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AchievementBadge from './AchievementBadge';
-import { Trophy, Target, Users, Clock, Sparkles } from 'lucide-react';
+import { Trophy, Target, Users, Clock, Sparkles, Award } from 'lucide-react';
 
 interface AchievementsSectionProps {
   completedAchievements: Achievement[];
@@ -26,6 +26,7 @@ const AchievementsSection = ({ completedAchievements, pendingAchievements }: Ach
       case 'social': return <Users className="w-4 h-4" />;
       case 'time': return <Clock className="w-4 h-4" />;
       case 'special': return <Sparkles className="w-4 h-4" />;
+      case 'certificate': return <Award className="w-4 h-4" />;
     }
   };
 
@@ -35,6 +36,7 @@ const AchievementsSection = ({ completedAchievements, pendingAchievements }: Ach
       case 'social': return 'Social';
       case 'time': return 'Frequência';
       case 'special': return 'Especial';
+      case 'certificate': return 'Certificados';
     }
   };
 
@@ -43,7 +45,7 @@ const AchievementsSection = ({ completedAchievements, pendingAchievements }: Ach
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Trophy className="w-5 h-5 text-yellow-600" />
-          <span>Conquistas</span>
+          <span>Conquistas Premium</span>
           <Badge variant="secondary" className="ml-2">
             {completedAchievements.length}/{completedAchievements.length + pendingAchievements.length}
           </Badge>
@@ -68,7 +70,7 @@ const AchievementsSection = ({ completedAchievements, pendingAchievements }: Ach
             >
               Todas
             </Badge>
-            {['content', 'social', 'time', 'special'].map(category => (
+            {['content', 'social', 'time', 'special', 'certificate'].map(category => (
               <Badge
                 key={category}
                 variant={selectedCategory === category ? 'default' : 'outline'}
