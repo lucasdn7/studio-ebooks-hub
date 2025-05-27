@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AchievementBadge from './AchievementBadge';
-import { Trophy, Target, Users, Clock, Sparkles } from 'lucide-react';
+import { Trophy, Target, Users, Clock, Sparkles, Award } from 'lucide-react';
 
 interface AchievementsSectionProps {
   completedAchievements: Achievement[];
@@ -26,6 +26,7 @@ const AchievementsSection = ({ completedAchievements, pendingAchievements }: Ach
       case 'social': return <Users className="w-4 h-4" />;
       case 'time': return <Clock className="w-4 h-4" />;
       case 'special': return <Sparkles className="w-4 h-4" />;
+      case 'certification': return <Award className="w-4 h-4" />;
     }
   };
 
@@ -35,13 +36,14 @@ const AchievementsSection = ({ completedAchievements, pendingAchievements }: Ach
       case 'social': return 'Social';
       case 'time': return 'Frequência';
       case 'special': return 'Especial';
+      case 'certification': return 'Certificação';
     }
   };
 
   return (
-    <Card>
+    <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
+        <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-gray-100">
           <Trophy className="w-5 h-5 text-yellow-600" />
           <span>Conquistas</span>
           <Badge variant="secondary" className="ml-2">
@@ -68,7 +70,7 @@ const AchievementsSection = ({ completedAchievements, pendingAchievements }: Ach
             >
               Todas
             </Badge>
-            {['content', 'social', 'time', 'special'].map(category => (
+            {['content', 'social', 'time', 'special', 'certification'].map(category => (
               <Badge
                 key={category}
                 variant={selectedCategory === category ? 'default' : 'outline'}
@@ -88,7 +90,7 @@ const AchievementsSection = ({ completedAchievements, pendingAchievements }: Ach
               ))}
             </div>
             {filterAchievements(completedAchievements).length === 0 && (
-              <div className="text-center text-gray-500 py-8">
+              <div className="text-center text-gray-500 dark:text-gray-400 py-8">
                 Nenhuma conquista nesta categoria ainda
               </div>
             )}
@@ -101,7 +103,7 @@ const AchievementsSection = ({ completedAchievements, pendingAchievements }: Ach
               ))}
             </div>
             {filterAchievements(pendingAchievements).length === 0 && (
-              <div className="text-center text-gray-500 py-8">
+              <div className="text-center text-gray-500 dark:text-gray-400 py-8">
                 Todas as conquistas desta categoria foram completadas! 🎉
               </div>
             )}
