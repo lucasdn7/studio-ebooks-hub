@@ -5,9 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContentBadge from "@/components/ContentBadge";
+import TierSystem from "@/components/TierSystem";
+import AchievementsSection from "@/components/AchievementsSection";
+import { useAchievements } from "@/hooks/useAchievements";
 import { Download, BookOpen, Play, Clock, Star, Users } from "lucide-react";
 
 const MemberArea = () => {
+  const { userProgress } = useAchievements();
+
   const recentDownloads = [
     {
       title: "Manual de Arquitetura Sustentável",
@@ -60,10 +65,10 @@ const MemberArea = () => {
   ];
 
   const stats = [
-    { label: "E-books Acessados", value: "47", icon: BookOpen },
-    { label: "Vídeos Assistidos", value: "23", icon: Play },
+    { label: "E-books Acessados", value: userProgress.stats.ebooksRead.toString(), icon: BookOpen },
+    { label: "Vídeos Assistidos", value: userProgress.stats.videosWatched.toString(), icon: Play },
     { label: "Horas de Estudo", value: "124", icon: Clock },
-    { label: "Certificados", value: "3", icon: Star }
+    { label: "Pontos Totais", value: userProgress.totalPoints.toString(), icon: Star }
   ];
 
   return (
@@ -79,11 +84,14 @@ const MemberArea = () => {
               </h1>
               <p className="text-gray-600">Acesse seus conteúdos exclusivos e acompanhe seu progresso</p>
             </div>
-            <Badge className="bg-green-100 text-green-800 border-green-200">
+            <Badge className={userProgress.currentTier.color}>
               <Users className="w-4 h-4 mr-1" />
-              Membro Premium
+              {userProgress.currentTier.name}
             </Badge>
           </div>
+
+          {/* Sistema de Níveis */}
+          <TierSystem userProgress={userProgress} />
 
           <div className="grid md:grid-cols-4 gap-6 mb-12">
             {stats.map((stat, index) => (
@@ -95,6 +103,14 @@ const MemberArea = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          {/* Seção de Conquistas */}
+          <div className="mb-12">
+            <AchievementsSection 
+              completedAchievements={userProgress.completedAchievements}
+              pendingAchievements={userProgress.pendingAchievements}
+            />
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
