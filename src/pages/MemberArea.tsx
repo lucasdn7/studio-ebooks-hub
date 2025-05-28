@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -80,7 +79,7 @@ const MemberArea = () => {
     { label: "Pontos Totais", value: userProgress.totalPoints.toString(), icon: Star, color: "text-purple-600" }
   ];
 
-  if (!userProgress.isPremuim) {
+  if (!userProgress.isPremium) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />

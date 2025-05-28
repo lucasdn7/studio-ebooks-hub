@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Achievement, UserProgress, UserTier, Certificate } from '@/types/achievements';
 import { achievementsData, userTiers, certificatesData } from '@/data/achievementsData';
@@ -12,7 +11,7 @@ export const useAchievements = () => {
     completedAchievements: achievementsData.filter(a => a.completed),
     pendingAchievements: achievementsData.filter(a => !a.completed),
     certificates: certificatesData,
-    isPremuim: true, // Simulando usuário premium para mostrar conquistas
+    isPremium: true, // Simulando usuário premium para mostrar conquistas
     stats: {
       ebooksRead: 3,
       commentsPosted: 5,
@@ -38,7 +37,7 @@ export const useAchievements = () => {
     
     userProgress.pendingAchievements.forEach(achievement => {
       // Verificar se é premium para acessar conquistas
-      if (achievement.premiumOnly && !userProgress.isPremuim) {
+      if (achievement.premiumOnly && !userProgress.isPremium) {
         return;
       }
 
