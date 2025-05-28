@@ -37,7 +37,7 @@ const EbookBundles = () => {
         "Iluminação para Ambientes",
         "Paleta de Cores para Interiores"
       ],
-      bonus: ["Kit de Templates", "Guia de Fornecedores", "Calculadora de Ambientes"],
+      bonus: [],
       category: "Design de Interiores",
       featured: false,
       totalPages: 260
