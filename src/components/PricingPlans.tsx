@@ -33,7 +33,6 @@ const PricingPlans = () => {
       description: "Acesso completo para profissionais",
       features: [
         "E-books ilimitados",
-        "Vídeos ilimitados",
         "Conteúdo exclusivo premium",
         "Download offline ilimitado",
         "Acesso antecipado a novos lançamentos",
@@ -152,6 +151,7 @@ const PricingPlans = () => {
           </p>
           <p className="text-xs text-gray-400">
             Os planos pagos estarão disponíveis em breve • Cancele a qualquer momento
+            Contúdos premium podem vir a se tornar gratuítos
           </p>
         </div>
       </div>
