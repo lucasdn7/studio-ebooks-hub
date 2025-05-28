@@ -9,7 +9,8 @@ import {
   User, 
   HelpCircle,
   LogOut,
-  Crown
+  Crown,
+  Trophy
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -23,6 +24,7 @@ const MemberSidebar = ({ activeTab, onTabChange, userProgress }: MemberSidebarPr
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "ebooks", label: "Meus eBooks", icon: BookOpen },
+    { id: "achievements", label: "Minhas Conquistas", icon: Trophy },
     { id: "subscription", label: "Assinatura", icon: CreditCard },
     { id: "profile", label: "Dados Pessoais", icon: User },
     { id: "support", label: "Suporte", icon: HelpCircle }
@@ -61,6 +63,11 @@ const MemberSidebar = ({ activeTab, onTabChange, userProgress }: MemberSidebarPr
             >
               <item.icon className="w-4 h-4" />
               <span className="text-sm">{item.label}</span>
+              {item.id === "achievements" && (
+                <Badge variant="secondary" className="ml-auto text-xs">
+                  {userProgress.completedAchievements.length}
+                </Badge>
+              )}
             </button>
           ))}
         </nav>

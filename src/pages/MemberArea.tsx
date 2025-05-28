@@ -8,6 +8,7 @@ import MyEbooks from "@/components/member/MyEbooks";
 import SubscriptionManagement from "@/components/member/SubscriptionManagement";
 import ProfileSettings from "@/components/member/ProfileSettings";
 import SupportHelp from "@/components/member/SupportHelp";
+import AchievementsTab from "@/components/member/AchievementsTab";
 import { useAchievements } from "@/hooks/useAchievements";
 import { Button } from "@/components/ui/button";
 
@@ -21,6 +22,8 @@ const MemberArea = () => {
         return <MemberDashboard userProgress={userProgress} />;
       case "ebooks":
         return <MyEbooks />;
+      case "achievements":
+        return <AchievementsTab userProgress={userProgress} />;
       case "subscription":
         return <SubscriptionManagement />;
       case "profile":

@@ -6,38 +6,38 @@ export const userTiers: UserTier[] = [
     level: 'bronze',
     name: 'Aprendiz',
     minPoints: 0,
-    maxPoints: 200,
-    benefits: ['Acesso básico', 'Suporte por email'],
-    discount: 5,
+    maxPoints: 99,
+    benefits: ['Acesso à biblioteca básica', 'Suporte por email'],
+    discount: 0,
     color: 'bg-orange-100 text-orange-800 border-orange-200',
     icon: '🥉'
   },
   {
     level: 'silver',
-    name: 'Profissional',
-    minPoints: 201,
-    maxPoints: 500,
-    benefits: ['Materiais exclusivos', 'Suporte prioritário', 'Webinars mensais'],
-    discount: 10,
+    name: 'Explorador',
+    minPoints: 100,
+    maxPoints: 299,
+    benefits: ['Participação em sorteios', 'Ofertas sazonais', 'Biblioteca expandida'],
+    discount: 5,
     color: 'bg-gray-100 text-gray-800 border-gray-200',
     icon: '🥈'
   },
   {
     level: 'gold',
     name: 'Especialista',
-    minPoints: 501,
-    maxPoints: 1000,
-    benefits: ['Consultoria gratuita', 'Acesso antecipado', 'Mentoria exclusiva'],
-    discount: 15,
+    minPoints: 300,
+    maxPoints: 599,
+    benefits: ['eBook técnico secreto', '10% desconto consultoria', 'Suporte prioritário'],
+    discount: 10,
     color: 'bg-yellow-100 text-yellow-800 border-yellow-200',
     icon: '🥇'
   },
   {
     level: 'platinum',
-    name: 'Mestre Arquiteto',
-    minPoints: 1001,
+    name: 'Mestre do Estúdio',
+    minPoints: 600,
     maxPoints: Infinity,
-    benefits: ['Todos os benefícios', 'Projetos personalizados', 'Networking VIP'],
+    benefits: ['20% desconto vitalício', 'Ferramentas exclusivas', 'Acesso VIP'],
     discount: 20,
     color: 'bg-purple-100 text-purple-800 border-purple-200',
     icon: '💎'
@@ -90,49 +90,73 @@ export const certificatesData: Certificate[] = [
 ];
 
 export const achievementsData: Achievement[] = [
-  // Conquistas de Conteúdo (apenas para premium)
+  // BADGES (+10 pontos cada)
   {
-    id: 'first-ebook',
+    id: 'first-step',
     title: 'Primeiro Passo',
-    description: 'Leia seu primeiro e-book',
+    description: 'Baixe seu primeiro eBook',
     icon: '📖',
     category: 'content',
     requirement: 1,
     currentProgress: 1,
     completed: true,
     completedAt: new Date('2024-01-15'),
-    points: 25,
-    reward: '5% de desconto no próximo e-book',
+    points: 10,
+    reward: 'Badge de iniciante',
     premiumOnly: true
   },
   {
-    id: 'ebook-enthusiast',
-    title: 'Entusiasta da Leitura',
-    description: 'Leia 25 e-books',
+    id: 'avid-reader',
+    title: 'Leitor Assíduo',
+    description: 'Baixe 10 eBooks',
     icon: '📚',
     category: 'content',
-    requirement: 25,
+    requirement: 10,
     currentProgress: 3,
     completed: false,
-    points: 100,
-    reward: 'Acesso antecipado a novos lançamentos',
+    points: 10,
+    reward: 'Badge de leitor dedicado',
     premiumOnly: true
   },
   {
-    id: 'bundle-collector',
-    title: 'Colecionador de Pacotes',
-    description: 'Compre 5 pacotes de e-books',
-    icon: '📦',
+    id: 'category-explorer',
+    title: 'Explorador de Categorias',
+    description: 'Baixe eBooks de 5 categorias diferentes',
+    icon: '🗺️',
     category: 'content',
     requirement: 5,
-    currentProgress: 0,
+    currentProgress: 2,
     completed: false,
-    points: 150,
-    reward: 'Pacote gratuito de sua escolha',
+    points: 10,
+    reward: 'Badge de diversidade',
     premiumOnly: true
   },
-  
-  // Conquistas Sociais (apenas para premium)
+  {
+    id: 'literary-critic',
+    title: 'Crítico Literário',
+    description: 'Deixe 3 avaliações em eBooks',
+    icon: '⭐',
+    category: 'social',
+    requirement: 3,
+    currentProgress: 1,
+    completed: false,
+    points: 10,
+    reward: 'Badge de engajamento',
+    premiumOnly: true
+  },
+  {
+    id: 'collector',
+    title: 'Colecionador',
+    description: 'Favorite 20 eBooks',
+    icon: '❤️',
+    category: 'social',
+    requirement: 20,
+    currentProgress: 0,
+    completed: false,
+    points: 10,
+    reward: 'Badge de curadoria',
+    premiumOnly: true
+  },
   {
     id: 'first-comment',
     title: 'Primeira Interação',
@@ -143,81 +167,54 @@ export const achievementsData: Achievement[] = [
     currentProgress: 1,
     completed: true,
     completedAt: new Date('2024-02-01'),
-    points: 30,
-    reward: 'Badge de Participante Ativo',
-    premiumOnly: true
-  },
-  {
-    id: 'community-helper',
-    title: 'Ajudante da Comunidade',
-    description: 'Faça 100 comentários úteis',
-    icon: '🤝',
-    category: 'social',
-    requirement: 100,
-    currentProgress: 5,
-    completed: false,
-    points: 200,
-    reward: 'Destaque no perfil + 15% desconto',
-    premiumOnly: true
-  },
-  
-  // Conquistas de Tempo/Frequência (apenas para premium)
-  {
-    id: 'week-streak',
-    title: 'Uma Semana Dedicada',
-    description: 'Acesse a plataforma por 14 dias seguidos',
-    icon: '🔥',
-    category: 'time',
-    requirement: 14,
-    currentProgress: 3,
-    completed: false,
-    points: 75,
-    reward: 'Multiplicador de XP por 7 dias',
-    premiumOnly: true
-  },
-  {
-    id: 'month-streak',
-    title: 'Dedicação Mensal',
-    description: 'Acesse por 60 dias seguidos',
-    icon: '📅',
-    category: 'time',
-    requirement: 60,
-    currentProgress: 8,
-    completed: false,
-    points: 300,
-    reward: 'Consultoria gratuita de 2 horas',
-    premiumOnly: true
-  },
-  
-  // Conquistas Especiais (apenas para premium)
-  {
-    id: 'early-bird',
-    title: 'Madrugador',
-    description: 'Acesse antes das 6h da manhã por 10 dias',
-    icon: '🌅',
-    category: 'special',
-    requirement: 10,
-    currentProgress: 0,
-    completed: false,
-    points: 80,
-    reward: 'Badge exclusivo + conteúdo surpresa',
-    premiumOnly: true
-  },
-  {
-    id: 'weekend-warrior',
-    title: 'Guerreiro de Fim de Semana',
-    description: 'Complete atividades em 20 fins de semana',
-    icon: '⚔️',
-    category: 'special',
-    requirement: 20,
-    currentProgress: 1,
-    completed: false,
-    points: 150,
-    reward: 'Acesso a workshops exclusivos',
+    points: 10,
+    reward: 'Badge de participação',
     premiumOnly: true
   },
 
-  // Conquistas de Certificados (apenas para premium)
+  // MEDALHAS (+50 pontos cada)
+  {
+    id: 'premium-member',
+    title: 'Membro Premium',
+    description: 'Assine um plano pago',
+    icon: '👑',
+    category: 'special',
+    requirement: 1,
+    currentProgress: 1,
+    completed: true,
+    completedAt: new Date('2024-01-10'),
+    points: 50,
+    reward: 'Medalha de membro premium',
+    premiumOnly: true
+  },
+  {
+    id: 'trailblazer',
+    title: 'Desbravador',
+    description: 'Complete a leitura de 50 eBooks',
+    icon: '🚀',
+    category: 'content',
+    requirement: 50,
+    currentProgress: 3,
+    completed: false,
+    points: 50,
+    reward: 'Medalha de dedicação extrema',
+    premiumOnly: true
+  },
+  {
+    id: 'top-reviewer',
+    title: 'Top Revisor',
+    description: 'Realize 10 comentários em diferentes eBooks',
+    icon: '🏆',
+    category: 'social',
+    requirement: 10,
+    currentProgress: 1,
+    completed: false,
+    points: 50,
+    reward: 'Medalha de contribuição',
+    premiumOnly: true
+  },
+
+  // Conquistas de Certificados (para compatibilidade)
   {
     id: 'first-certificate',
     title: 'Primeiro Certificado',
@@ -227,7 +224,7 @@ export const achievementsData: Achievement[] = [
     requirement: 1,
     currentProgress: 0,
     completed: false,
-    points: 200,
+    points: 50,
     reward: 'Destaque especial no perfil',
     premiumOnly: true
   },
@@ -240,7 +237,7 @@ export const achievementsData: Achievement[] = [
     requirement: 3,
     currentProgress: 0,
     completed: false,
-    points: 500,
+    points: 100,
     reward: 'Status VIP vitalício',
     premiumOnly: true
   }
