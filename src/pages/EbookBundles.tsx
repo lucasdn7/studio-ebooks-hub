@@ -12,8 +12,8 @@ const EbookBundles = () => {
       id: 1,
       title: "Kit Arquitetura Residencial Completo",
       description: "Tudo que você precisa para dominar projetos residenciais",
-      price: "R$ 79,90",
-      originalPrice: "R$ 139,70",
+      price: "R$ 71,94",
+      originalPrice: "R$ 119,90",
       discount: "40%",
       ebooks: [
         "Manual Completo de Arquitetura Residencial",
@@ -29,9 +29,9 @@ const EbookBundles = () => {
       id: 2,
       title: "Pacote Design de Interiores Premium",
       description: "Transforme ambientes com técnicas profissionais",
-      price: "R$ 79,90",
-      originalPrice: "R$ 119,70",
-      discount: "33%",
+      price: "R$ 65,94",
+      originalPrice: "R$ 109,90",
+      discount: "40%",
       ebooks: [
         "Design de Interiores: Tendências 2024",
         "Iluminação para Ambientes",
@@ -46,15 +46,15 @@ const EbookBundles = () => {
       id: 3,
       title: "Master Kit Marcenaria Profissional",
       description: "Do básico ao avançado em marcenaria",
-      price: "R$ 59,90",
-      originalPrice: "R$ 89,70",
+      price: "R$ 48,93",
+      originalPrice: "R$ 69,90",
       discount: "30%",
       ebooks: [
         "Técnicas Avançadas de Marcenaria",
         "Móveis Funcionais para Espaços Pequenos",
         "Ferramentas Essenciais para Marcenaria"
       ],
-      bonus: ["Guia de Madeiras", "Projetos Prontos", "Lista de Fornecedores"],
+      bonus: ["Guia de Madeiras"],
       category: "Marcenaria",
       featured: false,
       totalPages: 280
@@ -72,13 +72,13 @@ const EbookBundles = () => {
       title: "Integração Kindle",
       description: "Sincronize sua biblioteca diretamente com o Kindle",
       icon: "📱",
-      status: "2024"
+      status: "Em breve"
     },
     {
       title: "Realidade Aumentada",
       description: "Visualize projetos em 3D através do seu celular",
       icon: "🥽",
-      status: "2024"
+      status: "Em breve"
     },
     {
       title: "Consultoria IA",
