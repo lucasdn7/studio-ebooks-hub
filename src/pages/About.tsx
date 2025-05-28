@@ -18,13 +18,16 @@ const About = () => {
   const team = [
     {
       name: "Lucas do Nascimento",
-      role: "Fundadora & Arquiteto",
+      role: "Fundador & Arquiteto",
       description: "8 anos de experiência em arquitetura, projetos residenciais, criação de conteúdo e documentação de projetos.",
       image: "/placeholder.svg"
     },
+   {
+    
+    },
     {
       name: "Maria Luiza",
-      role: "Designer de Interiores",
+      role: "Fundadora & Designer de Interiores",
       description: "Especialista em design de interiores com foco em espaços residenciais.",
       image: "/placeholder.svg"
     },
