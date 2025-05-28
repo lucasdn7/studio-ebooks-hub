@@ -24,14 +24,14 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/planos">
+            <Link to="/ebooks">
               <Button size="lg" className="bg-gray-900 hover:bg-gray-800 px-8">
-                Começar Assinatura
+                Explore nossa biblioteca
               </Button>
             </Link>
-            <Link to="/ebooks">
+            <Link to="/login">
               <Button variant="outline" size="lg" className="px-8">
-                Explorar Catálogo
+                Comece a aprender
               </Button>
             </Link>
           </div>
