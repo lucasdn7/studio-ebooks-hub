@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContentBadge from "@/components/ContentBadge";
+import FavoriteButton from "@/components/FavoriteButton";
 import { Download, BookOpen, Star, Search, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -168,9 +168,7 @@ const Ebooks = () => {
             </p>
           </div>
 
-          {/* Filtros e Busca */}
           <div className="mb-8 space-y-4">
-            {/* Barra de busca */}
             <div className="relative max-w-md mx-auto">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
@@ -181,14 +179,12 @@ const Ebooks = () => {
               />
             </div>
 
-            {/* Filtros */}
             <div className="flex flex-wrap gap-4 justify-center items-center">
               <div className="flex items-center gap-2">
                 <Filter className="w-4 h-4 text-gray-500" />
                 <span className="text-sm font-medium text-gray-700">Filtros:</span>
               </div>
               
-              {/* Filtro por categoria */}
               <div className="flex flex-wrap gap-2">
                 {categories.map((category) => (
                   <button
@@ -205,7 +201,6 @@ const Ebooks = () => {
                 ))}
               </div>
 
-              {/* Filtro por tipo */}
               <div className="flex gap-2">
                 {types.map((type) => (
                   <button
@@ -224,7 +219,6 @@ const Ebooks = () => {
             </div>
           </div>
 
-          {/* Resultados */}
           <div className="mb-6 text-center text-gray-600">
             {filteredEbooks.length} e-book{filteredEbooks.length !== 1 ? 's' : ''} encontrado{filteredEbooks.length !== 1 ? 's' : ''}
           </div>
@@ -251,6 +245,17 @@ const Ebooks = () => {
                       />
                       <div className="absolute top-3 right-3">
                         <ContentBadge type={ebook.type} />
+                      </div>
+                      <div className="absolute top-3 left-3">
+                        <FavoriteButton 
+                          ebook={{
+                            id: ebook.id,
+                            title: ebook.title,
+                            author: ebook.author,
+                            category: ebook.category,
+                            cover: ebook.cover
+                          }}
+                        />
                       </div>
                     </div>
                   </div>

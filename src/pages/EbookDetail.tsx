@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContentBadge from "@/components/ContentBadge";
+import FavoriteButton from "@/components/FavoriteButton";
 import { 
   Star, 
   Download, 
@@ -89,7 +89,7 @@ const EbookDetail = () => {
           </Link>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* Coluna da esquerda - Capa e informações básicas */}
+            {/* Left Column - Cover and Basic Info */}
             <div className="lg:col-span-1">
               <Card className="sticky top-8">
                 <div className="relative">
@@ -101,6 +101,17 @@ const EbookDetail = () => {
                     />
                     <div className="absolute top-4 right-4">
                       <ContentBadge type={ebook.type} />
+                    </div>
+                    <div className="absolute top-4 left-4">
+                      <FavoriteButton 
+                        ebook={{
+                          id: ebook.id,
+                          title: ebook.title,
+                          author: ebook.author,
+                          category: ebook.category,
+                          cover: ebook.cover
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -140,21 +151,35 @@ const EbookDetail = () => {
                       </div>
                     </div>
 
-                    <Button 
-                      size="lg" 
-                      className={`w-full ${ebook.type === 'free' 
-                        ? 'bg-gray-900 hover:bg-gray-800' 
-                        : 'bg-blue-600 hover:bg-blue-700'
-                      }`}
-                    >
-                      {ebook.type === 'free' ? 'Baixar gratuitamente' : 'Adquirir agora'}
-                    </Button>
+                    <div className="space-y-2">
+                      <Button 
+                        size="lg" 
+                        className={`w-full ${ebook.type === 'free' 
+                          ? 'bg-gray-900 hover:bg-gray-800' 
+                          : 'bg-blue-600 hover:bg-blue-700'
+                        }`}
+                      >
+                        {ebook.type === 'free' ? 'Baixar gratuitamente' : 'Adquirir agora'}
+                      </Button>
+                      
+                      <FavoriteButton 
+                        ebook={{
+                          id: ebook.id,
+                          title: ebook.title,
+                          author: ebook.author,
+                          category: ebook.category,
+                          cover: ebook.cover
+                        }}
+                        variant="button"
+                        className="w-full"
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Coluna da direita - Conteúdo detalhado */}
+            {/* Right Column - Detailed Content */}
             <div className="lg:col-span-2">
               <div className="space-y-8">
                 {/* Informações principais */}
