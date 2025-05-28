@@ -150,8 +150,7 @@ const PricingPlans = () => {
             Todos os planos incluem acesso às três categorias especializadas
           </p>
           <p className="text-xs text-gray-400">
-            Os planos pagos estarão disponíveis em breve • Cancele a qualquer momento
-            Contúdos premium podem vir a se tornar gratuítos
+            Os planos pagos estarão disponíveis em breve • Cancele a qualquer momento • Contúdos premium podem vir a se tornar gratuítos
           </p>
         </div>
       </div>
