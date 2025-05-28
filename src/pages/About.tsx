@@ -17,23 +17,18 @@ const About = () => {
 
   const team = [
     {
-      name: "Ana Silva",
-      role: "Fundadora & Arquiteta",
-      description: "15 anos de experiência em arquitetura sustentável e projetos residenciais.",
+      name: "Lucas do Nascimento",
+      role: "Fundadora & Arquiteto",
+      description: "8 anos de experiência em arquitetura, projetos residenciais, criação de conteúdo e documentação de projetos.",
       image: "/placeholder.svg"
     },
     {
-      name: "Carlos Santos",
+      name: "Maria Luiza",
       role: "Designer de Interiores",
-      description: "Especialista em design de interiores com foco em espaços comerciais.",
+      description: "Especialista em design de interiores com foco em espaços residenciais.",
       image: "/placeholder.svg"
     },
-    {
-      name: "Pedro Lima",
-      role: "Mestre Marceneiro",
-      description: "30 anos de experiência em marcenaria fina e móveis sob medida.",
-      image: "/placeholder.svg"
-    }
+
   ];
 
   return (
@@ -72,7 +67,7 @@ const About = () => {
               <h2 className="text-3xl font-light text-gray-900 mb-6">Nossa Missão</h2>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
                 Acreditamos que o conhecimento de qualidade deve ser acessível a todos os profissionais 
-                que desejam se destacar em suas áreas. Por isso, criamos uma plataforma que reúne os 
+                que desejam se destacar em suas áreas. Por isso, a Studio Hall criou uma plataforma que reúne os 
                 melhores conteúdos em arquitetura, design de interiores e marcenaria.
               </p>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
