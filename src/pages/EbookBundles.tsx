@@ -20,7 +20,7 @@ const EbookBundles = () => {
         "Sustentabilidade na Arquitetura",
         "Projetos Residenciais Compactos"
       ],
-      bonus: ["Checklist de Projeto Residencial", "Templates de Plantas", "Guia de Materiais Sustentáveis"],
+      bonus: ["Checklist de Projeto Residencial", "Guia de Materiais Sustentáveis"],
       category: "Arquitetura",
       featured: true,
       totalPages: 340
