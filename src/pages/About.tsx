@@ -9,10 +9,10 @@ import { Link } from "react-router-dom";
 
 const About = () => {
   const stats = [
-    { label: "E-books Disponíveis", value: "120+", icon: BookOpen },
-    { label: "Profissionais Atendidos", value: "5000+", icon: Users },
+    { label: "E-books Disponíveis", value: "6+", icon: BookOpen },
+    { label: "Profissionais Atendidos", value: "0+", icon: Users },
     { label: "Categorias Especializadas", value: "3", icon: Target },
-    { label: "Anos de Experiência", value: "10+", icon: Award }
+    { label: "Anos de Experiência", value: "4+", icon: Award }
   ];
 
   const team = [
@@ -23,7 +23,10 @@ const About = () => {
       image: "/placeholder.svg"
     },
    {
-    
+    name: "Algum pet",
+      role: "não sei",
+      description: "nao sei",
+      image: "/placeholder.svg"
     },
     {
       name: "Maria Luiza",
