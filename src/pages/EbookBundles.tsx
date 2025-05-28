@@ -12,8 +12,8 @@ const EbookBundles = () => {
       id: 1,
       title: "Kit Arquitetura Residencial Completo",
       description: "Tudo que você precisa para dominar projetos residenciais",
-      price: "R$ 89,90",
-      originalPrice: "R$ 149,70",
+      price: "R$ 79,90",
+      originalPrice: "R$ 139,70",
       discount: "40%",
       ebooks: [
         "Manual Completo de Arquitetura Residencial",
@@ -46,8 +46,8 @@ const EbookBundles = () => {
       id: 3,
       title: "Master Kit Marcenaria Profissional",
       description: "Do básico ao avançado em marcenaria",
-      price: "R$ 69,90",
-      originalPrice: "R$ 99,70",
+      price: "R$ 59,90",
+      originalPrice: "R$ 89,70",
       discount: "30%",
       ebooks: [
         "Técnicas Avançadas de Marcenaria",
