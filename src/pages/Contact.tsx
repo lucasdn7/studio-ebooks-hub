@@ -12,24 +12,24 @@ const Contact = () => {
       icon: Mail,
       title: "Email",
       info: "contato@studioebooks.com",
-      description: "Resposta em até 24 horas"
+      description: "Resposta em até 48 horas"
     },
     {
       icon: Phone,
       title: "Telefone",
       info: "(11) 9999-9999",
-      description: "Seg a Sex: 9h às 18h"
+      description: "Seg a Sex: 13h às 18h"
     },
     {
       icon: MapPin,
       title: "Endereço",
-      info: "São Paulo, SP",
+      info: "Florianópolis, SC",
       description: "Atendimento online"
     },
     {
       icon: Clock,
       title: "Horário",
-      info: "9h às 18h",
+      info: "13h às 18h",
       description: "Segunda a Sexta-feira"
     }
   ];
@@ -41,7 +41,7 @@ const Contact = () => {
     },
     {
       question: "Posso fazer download dos materiais?",
-      answer: "Sim! Todos os e-books podem ser baixados para leitura offline. Os vídeos também podem ser baixados no plano premium."
+      answer: "Sim! Todos os e-books podem ser baixados para leitura offline."
     },
     {
       question: "Como funciona o período gratuito?",
@@ -49,7 +49,7 @@ const Contact = () => {
     },
     {
       question: "Os conteúdos são atualizados?",
-      answer: "Sim! Adicionamos novos e-books e vídeos mensalmente, sempre com as últimas tendências e técnicas do mercado."
+      answer: "Sim! Adicionamos novos e-books, sempre com as últimas tendências e técnicas do mercado."
     }
   ];
 
