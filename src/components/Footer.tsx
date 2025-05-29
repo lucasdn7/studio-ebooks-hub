@@ -21,7 +21,7 @@ const Footer = () => {
               design de interiores e marcenaria.
             </p>
             <p className="text-sm text-gray-400">
-              © 2024 Studio Ebooks. Todos os direitos reservados.
+              © 2025 Studio Ebooks - Uma produção Studio Hall Architecture and Design. Todos os direitos reservados.
             </p>
           </div>
           
