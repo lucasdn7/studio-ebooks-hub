@@ -8,32 +8,32 @@ const categories = [
   {
     title: "Arquitetura",
     description: "Projetos residenciais, comerciais, teoria arquitetônica e tendências contemporâneas",
-    ebooksCount: "45+ e-books",
+    ebooksCount: "1+ e-books",
     topics: ["Projetos Residenciais", "Arquitetura Comercial", "Sustentabilidade", "História da Arquitetura"],
     color: "bg-blue-50 border-blue-200",
     badge: "bg-blue-100 text-blue-800",
-    freeContent: 15,
-    premiumContent: 30
+    freeContent: 0,
+    premiumContent: 1
   },
   {
     title: "Design de Interiores",
     description: "Ambientação, cores, mobiliário, iluminação e técnicas de design de espacial",
-    ebooksCount: "38+ e-books",
+    ebooksCount: "1+ e-books",
     topics: ["Ambientação", "Paleta de Cores", "Mobiliário", "Iluminação"],
     color: "bg-emerald-50 border-emerald-200",
     badge: "bg-emerald-100 text-emerald-800",
-    freeContent: 12,
-    premiumContent: 26
+    freeContent: 0,
+    premiumContent: 1
   },
   {
     title: "Marcenaria",
     description: "Técnicas de marcenaria, projetos de móveis, materiais e acabamentos especializados",
-    ebooksCount: "29+ e-books",
+    ebooksCount: "1+ e-books",
     topics: ["Técnicas", "Projetos de Móveis", "Madeiras", "Acabamentos"],
     color: "bg-amber-50 border-amber-200",
     badge: "bg-amber-100 text-amber-800",
-    freeContent: 10,
-    premiumContent: 19
+    freeContent: 0,
+    premiumContent: 1
   }
 ];
 
@@ -124,7 +124,7 @@ const EbookCategories = () => {
               </Link>
             </div>
             <p className="text-sm text-gray-500 mt-4">
-              Sem cartão de crédito • Cancele a qualquer momento
+              Sem cartão de crédito • Cancele a qualquer momento • Teste por 7 dias grátis
             </p>
           </div>
         </div>
