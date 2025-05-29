@@ -13,7 +13,6 @@ const PricingPlans = () => {
       description: "Acesso limitado para começar",
       features: [
         "5 e-books por mês",
-        "10 vídeos por mês",
         "Acesso às 3 categorias",
         "Download offline limitado"
       ],
