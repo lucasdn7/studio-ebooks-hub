@@ -17,30 +17,30 @@ const EbookCarousel = () => {
         {
           id: 7,
           title: "Arquitetura Biofílica: Conectando Natureza e Design",
-          author: "Arq. Marina Verde",
+          author: "Arq. Lucas do Nascimento",
           category: "Arquitetura",
-          rating: 4.9,
-          downloads: "1.2k",
+          rating: 5.0,
+          downloads: "0",
           cover: "/placeholder.svg",
           type: "premium" as const
         },
         {
           id: 8,
           title: "Inteligência Artificial na Arquitetura",
-          author: "Dr. Carlos Tech",
+          author: "Lucas do Nascimento",
           category: "Tendências",
           rating: 4.8,
-          downloads: "890",
+          downloads: "0",
           cover: "/placeholder.svg",
           type: "premium" as const
         },
         {
           id: 9,
           title: "Design Regenerativo: O Futuro Sustentável",
-          author: "Eco Studio",
+          author: "Maria Luiza",
           category: "Sustentabilidade",
           rating: 4.7,
-          downloads: "756",
+          downloads: "0",
           cover: "/placeholder.svg",
           type: "free" as const
         }
@@ -54,30 +54,30 @@ const EbookCarousel = () => {
         {
           id: 1,
           title: "Manual Completo de Arquitetura Residencial",
-          author: "Arq. Maria Silva",
+          author: "Arq. Lucas do Nascimento",
           category: "Arquitetura",
           rating: 4.8,
-          downloads: "5.3k",
+          downloads: "0",
           cover: "/placeholder.svg",
           type: "free" as const
         },
         {
           id: 2,
           title: "Design de Interiores: Tendências 2024",
-          author: "Designer João Santos",
+          author: "Designer Maira Luiza",
           category: "Design de Interiores",
           rating: 4.9,
-          downloads: "4.1k",
+          downloads: "0",
           cover: "/placeholder.svg",
           type: "premium" as const
         },
         {
           id: 4,
           title: "Sustentabilidade na Arquitetura",
-          author: "Arq. Ana Costa",
+          author: "Arq. Lucas do Nascimento",
           category: "Arquitetura",
           rating: 4.8,
-          downloads: "3.7k",
+          downloads: "0",
           cover: "/placeholder.svg",
           type: "free" as const
         }
@@ -91,20 +91,20 @@ const EbookCarousel = () => {
         {
           id: 3,
           title: "Técnicas Avançadas de Marcenaria",
-          author: "Mestre Carlos Oliveira",
+          author: "Arq. Lucas do Nascimento",
           category: "Marcenaria",
           rating: 4.7,
-          downloads: "2.8k",
+          downloads: "0",
           cover: "/placeholder.svg",
           type: "premium" as const
         },
         {
           id: 5,
           title: "Iluminação para Ambientes",
-          author: "Designer Luz Pereira",
+          author: "Designer Maria Luiza",
           category: "Design de Interiores",
           rating: 4.6,
-          downloads: "2.9k",
+          downloads: "0",
           cover: "/placeholder.svg",
           type: "premium" as const
         },
