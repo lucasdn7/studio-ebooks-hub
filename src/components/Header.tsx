@@ -11,11 +11,11 @@ const Header = () => {
           <div className="flex items-center space-x-3">
             <Link to="/" className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gray-900 rounded-sm flex items-center justify-center">
-                <span className="text-white font-bold text-sm">SA</span>
+                <span className="text-white font-bold text-sm">SE</span>
               </div>
               <div>
                 <h1 className="text-xl font-semibold text-gray-900">Studio Ebooks</h1>
-                <p className="text-xs text-gray-500"></p>
+                <p className="text-xs text-gray-500">Architecture and Design</p>
               </div>
             </Link>
           </div>
