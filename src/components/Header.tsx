@@ -15,7 +15,7 @@ const Header = () => {
               </div>
               <div>
                 <h1 className="text-xl font-semibold text-gray-900">Studio Ebooks</h1>
-                <p className="text-xs text-gray-500">Arquitetura & Design</p>
+                <p className="text-xs text-gray-500"></p>
               </div>
             </Link>
           </div>
