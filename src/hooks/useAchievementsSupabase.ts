@@ -134,11 +134,11 @@ export const useAchievementsSupabase = () => {
     if (!user) return;
 
     try {
-      const { error } = await supabase.rpc('increment_user_stat', {
-        user_id: user.id,
-        stat_name: statType,
-        increment_value: increment
-      });
+      // Atualizar estatística específica diretamente na tabela
+      const { error } = await supabase
+        .from('user_stats')
+        .update({ [statType]: supabase.sql`${statType} + ${increment}` })
+        .eq('user_id', user.id);
 
       if (error) throw error;
 
