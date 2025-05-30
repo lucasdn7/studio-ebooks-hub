@@ -10,11 +10,29 @@ import ProfileSettings from "@/components/member/ProfileSettings";
 import SupportHelp from "@/components/member/SupportHelp";
 import AchievementsTab from "@/components/member/AchievementsTab";
 import { useAchievements } from "@/hooks/useAchievements";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import { Navigate } from "react-router-dom";
 
 const MemberArea = () => {
-  const { userProgress } = useAchievements();
+  const { user, loading } = useAuth();
+  const { userProgress, loading: achievementsLoading } = useAchievements();
   const [activeTab, setActiveTab] = useState("dashboard");
+
+  if (loading || achievementsLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
 
   const renderContent = () => {
     switch (activeTab) {
@@ -35,7 +53,7 @@ const MemberArea = () => {
     }
   };
 
-  if (!userProgress.isPremium) {
+  if (!userProgress?.isPremium) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />

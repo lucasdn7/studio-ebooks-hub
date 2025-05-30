@@ -9,7 +9,229 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      achievements: {
+        Row: {
+          created_at: string | null
+          description: string
+          icon: string | null
+          id: string
+          points: number
+          premium_only: boolean | null
+          requirement: number | null
+          title: string
+          type: Database["public"]["Enums"]["achievement_type"]
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          icon?: string | null
+          id: string
+          points?: number
+          premium_only?: boolean | null
+          requirement?: number | null
+          title: string
+          type: Database["public"]["Enums"]["achievement_type"]
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          icon?: string | null
+          id?: string
+          points?: number
+          premium_only?: boolean | null
+          requirement?: number | null
+          title?: string
+          type?: Database["public"]["Enums"]["achievement_type"]
+        }
+        Relationships: []
+      }
+      ebooks: {
+        Row: {
+          author: string
+          category: string
+          cover: string | null
+          created_at: string | null
+          description: string | null
+          file_url: string | null
+          id: number
+          is_premium: boolean | null
+          price: number | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          author: string
+          category: string
+          cover?: string | null
+          created_at?: string | null
+          description?: string | null
+          file_url?: string | null
+          id?: number
+          is_premium?: boolean | null
+          price?: number | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          author?: string
+          category?: string
+          cover?: string | null
+          created_at?: string | null
+          description?: string | null
+          file_url?: string | null
+          id?: number
+          is_premium?: boolean | null
+          price?: number | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      favorites: {
+        Row: {
+          created_at: string | null
+          ebook_id: number
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          ebook_id: number
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          ebook_id?: number
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_ebook_id_fkey"
+            columns: ["ebook_id"]
+            isOneToOne: false
+            referencedRelation: "ebooks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          completed: boolean | null
+          completed_at: string | null
+          created_at: string | null
+          current_progress: number | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          current_progress?: number | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          current_progress?: number | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_stats: {
+        Row: {
+          bundles_purchased: number | null
+          certificates_earned: number | null
+          comments_posted: number | null
+          created_at: string | null
+          current_tier: string | null
+          days_active: number | null
+          ebooks_read: number | null
+          id: string
+          is_premium: boolean | null
+          login_count: number | null
+          streak_days: number | null
+          total_points: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bundles_purchased?: number | null
+          certificates_earned?: number | null
+          comments_posted?: number | null
+          created_at?: string | null
+          current_tier?: string | null
+          days_active?: number | null
+          ebooks_read?: number | null
+          id?: string
+          is_premium?: boolean | null
+          login_count?: number | null
+          streak_days?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bundles_purchased?: number | null
+          certificates_earned?: number | null
+          comments_posted?: number | null
+          created_at?: string | null
+          current_tier?: string | null
+          days_active?: number | null
+          ebooks_read?: number | null
+          id?: string
+          is_premium?: boolean | null
+          login_count?: number | null
+          streak_days?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +240,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      achievement_type: "badge" | "medal"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +355,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      achievement_type: ["badge", "medal"],
+    },
   },
 } as const
