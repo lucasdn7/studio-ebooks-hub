@@ -134,10 +134,23 @@ export const useAchievementsSupabase = () => {
     if (!user) return;
 
     try {
-      // Atualizar estatística específica diretamente na tabela
+      // Primeiro, buscar o valor atual
+      const { data: currentStats, error: fetchError } = await supabase
+        .from('user_stats')
+        .select(statType)
+        .eq('user_id', user.id)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // Calcular o novo valor
+      const currentValue = currentStats?.[statType] || 0;
+      const newValue = currentValue + increment;
+
+      // Atualizar com o novo valor
       const { error } = await supabase
         .from('user_stats')
-        .update({ [statType]: supabase.sql`${statType} + ${increment}` })
+        .update({ [statType]: newValue })
         .eq('user_id', user.id);
 
       if (error) throw error;
