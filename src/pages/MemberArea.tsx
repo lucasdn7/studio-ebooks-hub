@@ -13,6 +13,8 @@ import { useAchievements } from "@/hooks/useAchievements";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Navigate } from "react-router-dom";
+import { Card, CardContent } from "@/components/ui/card";
+import { Crown, Lock } from "lucide-react";
 
 const MemberArea = () => {
   const { user, loading } = useAuth();
@@ -41,6 +43,25 @@ const MemberArea = () => {
       case "ebooks":
         return <MyEbooks />;
       case "achievements":
+        if (!userProgress?.isPremium) {
+          return (
+            <Card className="p-8 text-center">
+              <CardContent>
+                <Lock className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                <h2 className="text-2xl font-light text-gray-900 mb-4">
+                  Conquistas <span className="font-medium">Premium</span>
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  O sistema de conquistas e badges está disponível apenas para membros premium.
+                </p>
+                <Button className="bg-gray-900 hover:bg-gray-800">
+                  <Crown className="w-4 h-4 mr-2" />
+                  Fazer Upgrade Premium
+                </Button>
+              </CardContent>
+            </Card>
+          );
+        }
         return <AchievementsTab userProgress={userProgress} />;
       case "subscription":
         return <SubscriptionManagement />;
@@ -52,28 +73,6 @@ const MemberArea = () => {
         return <MemberDashboard userProgress={userProgress} />;
     }
   };
-
-  if (!userProgress?.isPremium) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <section className="py-20">
-          <div className="max-w-4xl mx-auto px-4 text-center">
-            <h1 className="text-3xl font-light text-gray-900 mb-4">
-              Área Exclusiva para <span className="font-medium">Membros Premium</span>
-            </h1>
-            <p className="text-lg text-gray-600 mb-8">
-              Faça upgrade para um plano premium e tenha acesso a conquistas, certificados e conteúdos exclusivos.
-            </p>
-            <Button size="lg" className="bg-gray-900 hover:bg-gray-800">
-              Fazer Upgrade
-            </Button>
-          </div>
-        </section>
-        <Footer />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">

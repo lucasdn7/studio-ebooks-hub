@@ -19,8 +19,6 @@ const Header = () => {
     { name: "Início", href: "/" },
     { name: "eBooks", href: "/ebooks" },
     { name: "Bundles", href: "/bundles" },
-    { name: "Vídeos", href: "/videos" },
-    { name: "Notícias", href: "/news" },
     { name: "Sobre", href: "/about" },
     { name: "Contato", href: "/contact" },
   ];

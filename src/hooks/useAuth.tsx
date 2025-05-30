@@ -23,10 +23,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+
+        // Check if user has premium access (casludn@gmail.com)
+        if (session?.user?.email === 'casludn@gmail.com' && event === 'SIGNED_IN') {
+          setTimeout(async () => {
+            try {
+              const { error } = await supabase
+                .from('user_stats')
+                .upsert({
+                  user_id: session.user.id,
+                  is_premium: true,
+                  updated_at: new Date().toISOString()
+                }, { onConflict: 'user_id' });
+              
+              if (error) {
+                console.error('Erro ao atualizar status premium:', error);
+              } else {
+                toast({
+                  title: "Acesso Premium Ativado!",
+                  description: "Bem-vindo ao Clube do eBook Premium!"
+                });
+              }
+            } catch (error) {
+              console.error('Erro ao verificar status premium:', error);
+            }
+          }, 0);
+        }
       }
     );
 
@@ -41,7 +67,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signUp = async (email: string, password: string, firstName?: string, lastName?: string) => {
-    const redirectUrl = `${window.location.origin}/`;
+    const redirectUrl = `${window.location.origin}/member-area`;
     
     const { error } = await supabase.auth.signUp({
       email,

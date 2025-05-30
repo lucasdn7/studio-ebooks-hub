@@ -10,8 +10,6 @@ import About from "./pages/About";
 import Ebooks from "./pages/Ebooks";
 import EbookDetail from "./pages/EbookDetail";
 import EbookBundles from "./pages/EbookBundles";
-import Videos from "./pages/Videos";
-import ConstructionNews from "./pages/ConstructionNews";
 import Categories from "./pages/Categories";
 import Plans from "./pages/Plans";
 import Contact from "./pages/Contact";
@@ -35,8 +33,6 @@ const App = () => (
             <Route path="/ebooks" element={<Ebooks />} />
             <Route path="/ebook/:id" element={<EbookDetail />} />
             <Route path="/bundles" element={<EbookBundles />} />
-            <Route path="/videos" element={<Videos />} />
-            <Route path="/news" element={<ConstructionNews />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/plans" element={<Plans />} />
             <Route path="/contact" element={<Contact />} />

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Navigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 const AuthPage = () => {
   const { user, signIn, signUp, loading } = useAuth();
@@ -33,6 +34,23 @@ const AuthPage = () => {
     setIsLoading(true);
     await signUp(email, password, firstName, lastName);
     setIsLoading(false);
+  };
+
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/member-area`
+        }
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.error('Erro no login com Google:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (loading) {
@@ -67,7 +85,25 @@ const AuthPage = () => {
                   Digite suas credenciais para acessar sua conta
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
+                <Button 
+                  onClick={handleGoogleSignIn} 
+                  disabled={isLoading}
+                  variant="outline" 
+                  className="w-full"
+                >
+                  {isLoading ? 'Entrando...' : 'Continuar com Google'}
+                </Button>
+                
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">ou</span>
+                  </div>
+                </div>
+
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div>
                     <Label htmlFor="email">Email</Label>
@@ -105,7 +141,25 @@ const AuthPage = () => {
                   Preencha os dados para criar sua conta
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
+                <Button 
+                  onClick={handleGoogleSignIn} 
+                  disabled={isLoading}
+                  variant="outline" 
+                  className="w-full"
+                >
+                  {isLoading ? 'Criando conta...' : 'Continuar com Google'}
+                </Button>
+                
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">ou</span>
+                  </div>
+                </div>
+
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
