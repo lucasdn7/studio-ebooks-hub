@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,8 +9,13 @@ import {
   AlertTriangle,
   Receipt
 } from "lucide-react";
+import { usePayments, useAuth, useAchievements } from "@/hooks";
 
 const SubscriptionManagement = () => {
+  const { openCustomerPortal, loading } = usePayments();
+  const { user } = useAuth();
+  const { userProgress } = useAchievements();
+
   const subscriptionData = {
     status: "active",
     plan: "Premium Plus",
@@ -42,45 +46,53 @@ const SubscriptionManagement = () => {
       </h2>
 
       {/* Status Card */}
-      <Card className={`border-l-4 ${subscriptionData.status === 'active' ? 'border-l-green-500' : 'border-l-red-500'}`}>
+      <Card className={`border-l-4 ${userProgress?.isPremium ? 'border-l-green-500' : 'border-l-gray-300'}`}>
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <Crown className="w-8 h-8 text-yellow-600" />
               <div>
-                <h3 className="text-xl font-medium text-gray-900">{subscriptionData.plan}</h3>
-                <Badge className={subscriptionData.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}>
-                  {subscriptionData.status === 'active' ? 'Ativa' : 'Expirada'}
+                <h3 className="text-xl font-medium text-gray-900">
+                  {userProgress?.isPremium ? 'Premium' : 'Gratuito'}
+                </h3>
+                <Badge className={userProgress?.isPremium ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}>
+                  {userProgress?.isPremium ? 'Ativa' : 'Plano Gratuito'}
                 </Badge>
               </div>
             </div>
-            <div className="text-right">
-              <div className="text-2xl font-light text-gray-900">{subscriptionData.price}</div>
-              <div className="text-sm text-gray-600">por mês</div>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4 mb-6">
-            <div className="flex items-center space-x-2">
-              <Calendar className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-600">Próximo pagamento: {subscriptionData.nextBilling}</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <CreditCard className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-600">Método: {subscriptionData.paymentMethod}</span>
-            </div>
+            {userProgress?.isPremium && (
+              <div className="text-right">
+                <div className="text-2xl font-light text-gray-900">R$ 29,90</div>
+                <div className="text-sm text-gray-600">por mês</div>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Button className="bg-gray-900 hover:bg-gray-800">
-              Renovar assinatura
-            </Button>
-            <Button variant="outline">
-              Alterar plano
-            </Button>
-            <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">
-              Cancelar assinatura
-            </Button>
+            {userProgress?.isPremium ? (
+              <>
+                <Button 
+                  className="bg-gray-900 hover:bg-gray-800"
+                  onClick={openCustomerPortal}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <CreditCard className="w-4 h-4 mr-2" />
+                  )}
+                  Gerenciar Assinatura
+                </Button>
+              </>
+            ) : (
+              <PaymentButton
+                productType="subscription"
+                className="bg-gray-900 hover:bg-gray-800"
+              >
+                <Crown className="w-4 h-4 mr-2" />
+                Fazer Upgrade Premium
+              </PaymentButton>
+            )}
           </div>
         </CardContent>
       </Card>

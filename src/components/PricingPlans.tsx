@@ -126,13 +126,30 @@ const PricingPlans = () => {
                   ))}
                 </div>
                 
-                <Button 
-                  variant={plan.buttonVariant}
-                  className={`w-full ${plan.popular ? 'bg-gray-900 hover:bg-gray-800' : ''} ${plan.current ? 'cursor-default' : ''}`}
-                  disabled={plan.current}
-                >
-                  {plan.buttonText}
-                </Button>
+                {plan.current ? (
+                  <Button 
+                    variant="outline"
+                    className="w-full cursor-default"
+                    disabled
+                  >
+                    Plano Atual
+                  </Button>
+                ) : plan.name === "Premium" ? (
+                  <PaymentButton
+                    productType="subscription"
+                    className="w-full bg-gray-900 hover:bg-gray-800"
+                  >
+                    Assinar Premium
+                  </PaymentButton>
+                ) : (
+                  <Button 
+                    variant={plan.buttonVariant}
+                    className="w-full"
+                    disabled
+                  >
+                    {plan.buttonText}
+                  </Button>
+                )}
                 
                 {plan.current && (
                   <p className="text-xs text-gray-500 text-center mt-2">
@@ -149,7 +166,7 @@ const PricingPlans = () => {
             Todos os planos incluem acesso às três categorias especializadas
           </p>
           <p className="text-xs text-gray-400">
-            Os planos pagos estarão disponíveis em breve • Cancele a qualquer momento • Contúdos premium podem vir a se tornar gratuítos
+            Cancele a qualquer momento • Pagamento seguro via Stripe
           </p>
         </div>
       </div>

@@ -1,65 +1,13 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Download, BookOpen, Star, CheckCircle, Gift } from "lucide-react";
+import { useKits } from "@/hooks/useKits";
 
 const EbookBundles = () => {
-  const bundles = [
-    {
-      id: 1,
-      title: "Kit Arquitetura Residencial Completo",
-      description: "Tudo que você precisa para dominar projetos residenciais",
-      price: "R$ 71,94",
-      originalPrice: "R$ 119,90",
-      discount: "40%",
-      ebooks: [
-        "Manual Completo de Arquitetura Residencial",
-        "Sustentabilidade na Arquitetura",
-        "Projetos Residenciais Compactos"
-      ],
-      bonus: ["Checklist de Projeto Residencial", "Guia de Materiais Sustentáveis"],
-      category: "Arquitetura",
-      featured: true,
-      totalPages: 340
-    },
-    {
-      id: 2,
-      title: "Pacote Design de Interiores Premium",
-      description: "Transforme ambientes com técnicas profissionais",
-      price: "R$ 65,94",
-      originalPrice: "R$ 109,90",
-      discount: "40%",
-      ebooks: [
-        "Design de Interiores: Tendências 2024",
-        "Iluminação para Ambientes",
-        "Paleta de Cores para Interiores"
-      ],
-      bonus: [],
-      category: "Design de Interiores",
-      featured: false,
-      totalPages: 260
-    },
-    {
-      id: 3,
-      title: "Master Kit Marcenaria Profissional",
-      description: "Do básico ao avançado em marcenaria",
-      price: "R$ 48,93",
-      originalPrice: "R$ 69,90",
-      discount: "30%",
-      ebooks: [
-        "Técnicas Avançadas de Marcenaria",
-        "Móveis Funcionais para Espaços Pequenos",
-        "Ferramentas Essenciais para Marcenaria"
-      ],
-      bonus: ["Guia de Madeiras"],
-      category: "Marcenaria",
-      featured: false,
-      totalPages: 280
-    }
-  ];
+  const { data: kits, loading } = useKits();
 
   const upcomingFeatures = [
     {
@@ -101,6 +49,21 @@ const EbookBundles = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Carregando kits...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -117,78 +80,47 @@ const EbookBundles = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {bundles.map((bundle) => (
-              <Card key={bundle.id} className={`group hover:shadow-lg transition-all duration-300 ${bundle.featured ? 'ring-2 ring-gray-900 ring-opacity-10' : ''}`}>
-                {bundle.featured && (
-                  <div className="absolute -top-3 left-4 z-10">
-                    <Badge className="bg-gray-900 text-white">
-                      <Star className="w-3 h-3 mr-1" />
-                      Mais Popular
-                    </Badge>
-                  </div>
-                )}
-
+            {kits?.map((kit) => (
+              <Card key={kit.id} className="group hover:shadow-lg transition-all duration-300">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between mb-2">
-                    <Badge 
-                      variant="outline" 
-                      className={`text-xs ${getCategoryColor(bundle.category)}`}
-                    >
-                      {bundle.category}
+                    <Badge variant="outline" className="text-xs">
+                      {kit.is_premium ? 'Premium' : 'Padrão'}
                     </Badge>
-                    <Badge variant="secondary" className="bg-red-100 text-red-700">
-                      -{bundle.discount}
-                    </Badge>
+                    {kit.is_premium && (
+                      <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">
+                        Premium
+                      </Badge>
+                    )}
                   </div>
                   <CardTitle className="text-lg font-medium text-gray-900 leading-snug">
-                    {bundle.title}
+                    {kit.title}
                   </CardTitle>
-                  <p className="text-sm text-gray-600">{bundle.description}</p>
+                  <p className="text-sm text-gray-600">{kit.description}</p>
                 </CardHeader>
 
                 <CardContent className="pt-0">
                   <div className="mb-4">
                     <div className="flex items-center space-x-2 mb-2">
-                      <span className="text-2xl font-bold text-gray-900">{bundle.price}</span>
-                      <span className="text-sm text-gray-500 line-through">{bundle.originalPrice}</span>
+                      <span className="text-2xl font-bold text-gray-900">
+                        R$ {kit.price.toFixed(2)}
+                      </span>
                     </div>
                     <div className="text-xs text-gray-500 flex items-center">
                       <BookOpen className="w-4 h-4 mr-1" />
-                      {bundle.totalPages} páginas no total
+                      {kit.ebook_ids?.length || 0} e-books inclusos
                     </div>
                   </div>
 
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium text-gray-900 mb-2">E-books inclusos:</h4>
-                    <ul className="space-y-1">
-                      {bundle.ebooks.map((ebook, index) => (
-                        <li key={index} className="text-xs text-gray-600 flex items-center">
-                          <CheckCircle className="w-3 h-3 mr-2 text-green-500" />
-                          {ebook}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium text-gray-900 mb-2 flex items-center">
-                      <Gift className="w-4 h-4 mr-1 text-orange-500" />
-                      Bônus inclusos:
-                    </h4>
-                    <ul className="space-y-1">
-                      {bundle.bonus.map((bonus, index) => (
-                        <li key={index} className="text-xs text-gray-600 flex items-center">
-                          <CheckCircle className="w-3 h-3 mr-2 text-orange-500" />
-                          {bonus}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <Button className="w-full bg-gray-900 hover:bg-gray-800">
+                  <PaymentButton
+                    productType="kit"
+                    productId={kit.id}
+                    price={kit.price}
+                    className="w-full bg-gray-900 hover:bg-gray-800"
+                  >
                     <Download className="w-4 h-4 mr-2" />
-                    Comprar Pacote
-                  </Button>
+                    Comprar Kit
+                  </PaymentButton>
                 </CardContent>
               </Card>
             ))}
