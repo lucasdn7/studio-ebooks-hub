@@ -21,7 +21,7 @@ const AchievementsTab = ({ userProgress }: AchievementsTabProps) => {
   const totalMedals = completedAchievements.filter(a => a.category === 'certificate').length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -41,7 +41,7 @@ const AchievementsTab = ({ userProgress }: AchievementsTabProps) => {
       {/* User Avatar and Current Rank */}
       <Card className="bg-gradient-to-r from-gray-50 to-gray-100">
         <CardContent className="p-6">
-          <div className="flex items-center space-x-6">
+          <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
             <div className="relative">
               <div className="w-20 h-20 bg-gray-900 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                 JS
@@ -50,20 +50,20 @@ const AchievementsTab = ({ userProgress }: AchievementsTabProps) => {
                 <span className="text-2xl">{currentTier.icon}</span>
               </div>
             </div>
-            <div className="flex-1">
-              <h2 className="text-xl font-semibold text-gray-900">João Silva</h2>
-              <Badge className={`${currentTier.color} text-sm`}>
+            <div className="flex-1 text-center sm:text-left">
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">João Silva</h2>
+              <Badge className={`${currentTier.color} text-sm mb-3`}>
                 <Crown className="w-4 h-4 mr-1" />
                 {currentTier.name}
               </Badge>
               {nextTier && (
-                <div className="mt-3">
+                <div className="max-w-md">
                   <div className="flex justify-between text-sm text-gray-600 mb-1">
                     <span>Progresso para {nextTier.name}</span>
                     <span>{totalPoints}/{nextTier.minPoints} pts</span>
                   </div>
-                  <Progress value={progressToNext} className="h-2" />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <Progress value={progressToNext} className="h-2 mb-2" />
+                  <p className="text-xs text-gray-500">
                     Você está a {nextTier.minPoints - totalPoints} pontos de se tornar {nextTier.name}!
                   </p>
                 </div>
@@ -74,31 +74,31 @@ const AchievementsTab = ({ userProgress }: AchievementsTabProps) => {
       </Card>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
-          <CardContent className="p-4 text-center">
-            <div className="flex items-center justify-center mb-2">
+          <CardContent className="p-6 text-center">
+            <div className="flex items-center justify-center mb-3">
               <Medal className="w-8 h-8 text-blue-600" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">{totalBadges}</div>
+            <div className="text-2xl font-bold text-gray-900 mb-1">{totalBadges}</div>
             <div className="text-sm text-gray-600">Badges Conquistadas</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4 text-center">
-            <div className="flex items-center justify-center mb-2">
+          <CardContent className="p-6 text-center">
+            <div className="flex items-center justify-center mb-3">
               <Trophy className="w-8 h-8 text-yellow-600" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">{totalMedals}</div>
+            <div className="text-2xl font-bold text-gray-900 mb-1">{totalMedals}</div>
             <div className="text-sm text-gray-600">Medalhas Especiais</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4 text-center">
-            <div className="flex items-center justify-center mb-2">
+          <CardContent className="p-6 text-center">
+            <div className="flex items-center justify-center mb-3">
               <Target className="w-8 h-8 text-green-600" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">{pendingAchievements.length}</div>
+            <div className="text-2xl font-bold text-gray-900 mb-1">{pendingAchievements.length}</div>
             <div className="text-sm text-gray-600">Em Progresso</div>
           </CardContent>
         </Card>
@@ -120,10 +120,10 @@ const AchievementsTab = ({ userProgress }: AchievementsTabProps) => {
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Continue sua jornada de aprendizado!
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-600 mb-4 max-w-2xl mx-auto">
             Baixe mais eBooks, deixe avaliações e suba de rank para desbloquear recompensas exclusivas.
           </p>
-          <div className="flex justify-center space-x-3">
+          <div className="flex flex-wrap justify-center gap-2">
             <Badge variant="outline" className="bg-white">
               📚 Próxima conquista: Leitor Assíduo
             </Badge>

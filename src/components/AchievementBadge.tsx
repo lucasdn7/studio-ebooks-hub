@@ -36,29 +36,40 @@ const AchievementBadge = ({ achievement, size = 'md' }: AchievementBadgeProps) =
   };
 
   const sizeClasses = {
-    sm: 'w-20 h-20 text-xs',
-    md: 'w-32 h-32 text-sm',
-    lg: 'w-40 h-40 text-base'
+    sm: 'w-24 h-28',
+    md: 'w-full min-h-[200px]',
+    lg: 'w-full min-h-[250px]'
   };
 
   if (size === 'sm') {
     return (
-      <div className={`${sizeClasses[size]} relative flex flex-col items-center justify-center rounded-lg border-2 ${
+      <div className={`${sizeClasses[size]} relative flex flex-col items-center justify-between p-3 rounded-lg border-2 ${
         achievement.completed 
           ? 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-300' 
           : 'bg-gray-50 border-gray-200'
       }`}>
-        <div className="text-2xl mb-1">
-          {achievement.completed ? achievement.icon : <Lock className="w-4 h-4 text-gray-400" />}
+        <div className="flex flex-col items-center flex-1 justify-center">
+          <div className="text-xl mb-1">
+            {achievement.completed ? achievement.icon : <Lock className="w-5 h-5 text-gray-400" />}
+          </div>
+          <div className="font-medium text-center text-xs leading-tight line-clamp-2">
+            {achievement.title}
+          </div>
         </div>
-        <div className="font-medium text-center leading-tight">{achievement.title}</div>
+        
+        <div className="mt-2 w-full">
+          <div className="text-xs font-medium text-center text-yellow-700 mb-1">
+            +{achievement.points} pts
+          </div>
+          {achievement.premiumOnly && (
+            <Badge variant="outline" className="w-full justify-center bg-purple-100 text-purple-700 border-purple-200 text-xs py-0">
+              Premium
+            </Badge>
+          )}
+        </div>
+        
         {achievement.completed && (
           <CheckCircle className="absolute -top-1 -right-1 w-4 h-4 text-green-500 bg-white rounded-full" />
-        )}
-        {achievement.premiumOnly && (
-          <Badge variant="outline" className="absolute -bottom-1 bg-purple-100 text-purple-700 border-purple-200 text-xs">
-            Premium
-          </Badge>
         )}
       </div>
     );
@@ -70,8 +81,8 @@ const AchievementBadge = ({ achievement, size = 'md' }: AchievementBadgeProps) =
         ? 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-300' 
         : 'bg-white'
     }`}>
-      <CardContent className="p-4 h-full flex flex-col justify-between">
-        <div className="flex items-center justify-between mb-2">
+      <CardContent className="p-4 h-full flex flex-col">
+        <div className="flex items-center justify-between mb-3">
           <Badge variant="outline" className={`text-xs ${getCategoryColor(achievement.category)}`}>
             {getCategoryName(achievement.category)}
           </Badge>
@@ -80,36 +91,41 @@ const AchievementBadge = ({ achievement, size = 'md' }: AchievementBadgeProps) =
           )}
         </div>
         
-        <div className="text-center flex-1 flex flex-col justify-center">
-          <div className="text-3xl mb-2">
-            {achievement.completed ? achievement.icon : <Lock className="w-8 h-8 mx-auto text-gray-400" />}
-          </div>
-          <h3 className="font-semibold text-gray-900 mb-1">{achievement.title}</h3>
-          <p className="text-xs text-gray-600 mb-2">{achievement.description}</p>
-          {achievement.premiumOnly && (
-            <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs mb-2">
-              Exclusivo Premium
-            </Badge>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          {!achievement.completed && (
-            <>
-              <Progress value={progressPercentage} className="h-2" />
-              <div className="text-xs text-gray-500 text-center">
-                {achievement.currentProgress}/{achievement.requirement}
-              </div>
-            </>
-          )}
-          <div className="text-xs font-medium text-center text-yellow-700">
-            +{achievement.points} pontos
-          </div>
-          {achievement.reward && (
-            <div className="text-xs text-gray-600 text-center italic">
-              {achievement.reward}
+        <div className="flex-1 flex flex-col">
+          <div className="text-center mb-3">
+            <div className="text-3xl mb-2">
+              {achievement.completed ? achievement.icon : <Lock className="w-8 h-8 mx-auto text-gray-400" />}
             </div>
-          )}
+            <h3 className="font-semibold text-gray-900 mb-2 text-sm">{achievement.title}</h3>
+            <p className="text-xs text-gray-600 line-clamp-2 mb-3">{achievement.description}</p>
+          </div>
+
+          <div className="mt-auto space-y-3">
+            {achievement.premiumOnly && (
+              <Badge variant="outline" className="w-full justify-center bg-purple-100 text-purple-700 border-purple-200 text-xs">
+                Exclusivo Premium
+              </Badge>
+            )}
+
+            {!achievement.completed && (
+              <div className="space-y-2">
+                <Progress value={progressPercentage} className="h-2" />
+                <div className="text-xs text-gray-500 text-center">
+                  {achievement.currentProgress}/{achievement.requirement}
+                </div>
+              </div>
+            )}
+            
+            <div className="text-xs font-medium text-center text-yellow-700 bg-yellow-50 py-1 rounded">
+              +{achievement.points} pontos
+            </div>
+            
+            {achievement.reward && (
+              <div className="text-xs text-gray-600 text-center italic">
+                {achievement.reward}
+              </div>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>

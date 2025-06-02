@@ -51,7 +51,7 @@ const AchievementsSection = ({ completedAchievements, pendingAchievements }: Ach
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-6">
         <Tabs defaultValue="completed" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="completed">
@@ -62,7 +62,7 @@ const AchievementsSection = ({ completedAchievements, pendingAchievements }: Ach
             </TabsTrigger>
           </TabsList>
           
-          <div className="flex flex-wrap gap-2 my-4">
+          <div className="flex flex-wrap gap-2 my-6">
             <Badge 
               variant={selectedCategory === 'all' ? 'default' : 'outline'}
               className="cursor-pointer"
@@ -84,27 +84,31 @@ const AchievementsSection = ({ completedAchievements, pendingAchievements }: Ach
           </div>
 
           <TabsContent value="completed" className="space-y-4">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
               {filterAchievements(completedAchievements).map((achievement) => (
                 <AchievementBadge key={achievement.id} achievement={achievement} size="sm" />
               ))}
             </div>
             {filterAchievements(completedAchievements).length === 0 && (
-              <div className="text-center text-gray-500 py-8">
-                Nenhuma conquista nesta categoria ainda
+              <div className="text-center text-gray-500 py-12">
+                <Trophy className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                <p className="text-lg font-medium mb-2">Nenhuma conquista nesta categoria ainda</p>
+                <p className="text-sm">Continue explorando para desbloquear suas primeiras conquistas!</p>
               </div>
             )}
           </TabsContent>
 
           <TabsContent value="pending" className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filterAchievements(pendingAchievements).map((achievement) => (
                 <AchievementBadge key={achievement.id} achievement={achievement} size="md" />
               ))}
             </div>
             {filterAchievements(pendingAchievements).length === 0 && (
-              <div className="text-center text-gray-500 py-8">
-                Todas as conquistas desta categoria foram completadas! 🎉
+              <div className="text-center text-gray-500 py-12">
+                <Trophy className="w-12 h-12 mx-auto mb-3 text-yellow-400" />
+                <p className="text-lg font-medium mb-2">Todas as conquistas desta categoria foram completadas! 🎉</p>
+                <p className="text-sm">Parabéns! Você dominou esta categoria completamente.</p>
               </div>
             )}
           </TabsContent>
