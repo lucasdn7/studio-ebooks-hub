@@ -5,9 +5,10 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Download, BookOpen, Star, CheckCircle, Gift } from "lucide-react";
 import { useKits } from "@/hooks/useKits";
+import PaymentButton from "@/components/PaymentButton";
 
 const EbookBundles = () => {
-  const { data: kits, loading } = useKits();
+  const { data: kits, isLoading } = useKits();
 
   const upcomingFeatures = [
     {
@@ -49,7 +50,7 @@ const EbookBundles = () => {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />

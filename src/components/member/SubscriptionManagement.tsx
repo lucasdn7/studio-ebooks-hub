@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,9 +8,13 @@ import {
   Crown,
   Check,
   AlertTriangle,
-  Receipt
+  Receipt,
+  Loader2
 } from "lucide-react";
-import { usePayments, useAuth, useAchievements } from "@/hooks";
+import { usePayments } from "@/hooks/usePayments";
+import { useAuth } from "@/hooks/useAuth";
+import { useAchievements } from "@/hooks/useAchievements";
+import PaymentButton from "@/components/PaymentButton";
 
 const SubscriptionManagement = () => {
   const { openCustomerPortal, loading } = usePayments();
