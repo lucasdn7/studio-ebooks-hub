@@ -82,9 +82,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     if (error) {
+      // Handle specific error cases
+      let errorMessage = error.message;
+      
+      if (error.message.includes('captcha')) {
+        errorMessage = "Sistema de verificação não configurado. Entre em contato com o suporte.";
+      } else if (error.message.includes('User already registered')) {
+        errorMessage = "Este email já está cadastrado. Tente fazer login.";
+      } else if (error.message.includes('Invalid email')) {
+        errorMessage = "Email inválido. Verifique o formato do email.";
+      } else if (error.message.includes('Password')) {
+        errorMessage = "A senha deve ter pelo menos 6 caracteres.";
+      }
+
       toast({
         title: "Erro no cadastro",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive"
       });
     } else {
@@ -104,9 +117,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     if (error) {
+      // Handle specific error cases
+      let errorMessage = error.message;
+      
+      if (error.message.includes('captcha')) {
+        errorMessage = "Sistema de verificação não configurado. Entre em contato com o suporte.";
+      } else if (error.message.includes('Invalid login credentials')) {
+        errorMessage = "Email ou senha incorretos.";
+      } else if (error.message.includes('Email not confirmed')) {
+        errorMessage = "Email não confirmado. Verifique sua caixa de entrada.";
+      } else if (error.message.includes('Too many requests')) {
+        errorMessage = "Muitas tentativas. Aguarde um momento e tente novamente.";
+      }
+
       toast({
         title: "Erro no login",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive"
       });
     }

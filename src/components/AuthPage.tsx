@@ -49,9 +49,18 @@ const AuthPage = () => {
       
       if (error) {
         console.error('Erro no login com Google:', error);
+        
+        let errorMessage = "Não foi possível fazer login com Google. Tente novamente.";
+        
+        if (error.message.includes('missing OAuth secret')) {
+          errorMessage = "Login com Google não configurado. Use email e senha.";
+        } else if (error.message.includes('invalid_request')) {
+          errorMessage = "Configuração do Google OAuth pendente. Use email e senha.";
+        }
+        
         toast({
-          title: "Erro no login",
-          description: "Não foi possível fazer login com Google. Tente novamente.",
+          title: "Login com Google indisponível",
+          description: errorMessage,
           variant: "destructive"
         });
       }
@@ -59,7 +68,7 @@ const AuthPage = () => {
       console.error('Erro no login com Google:', error);
       toast({
         title: "Erro no login",
-        description: "Ocorreu um erro inesperado. Tente novamente.",
+        description: "Use email e senha para acessar sua conta.",
         variant: "destructive"
       });
     } finally {
@@ -149,6 +158,15 @@ const AuthPage = () => {
                     {isLoading ? 'Entrando...' : 'Entrar'}
                   </Button>
                 </form>
+
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">
+                    Problemas para acessar?{' '}
+                    <span className="text-gray-900 font-medium">
+                      Use email e senha
+                    </span>
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -223,12 +241,19 @@ const AuthPage = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
+                      minLength={6}
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? 'Criando conta...' : 'Criar conta'}
                   </Button>
                 </form>
+
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">
+                    A senha deve ter pelo menos 6 caracteres
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
