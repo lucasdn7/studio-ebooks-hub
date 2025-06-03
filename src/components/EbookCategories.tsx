@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -90,7 +91,7 @@ const EbookCategories = () => {
                   </div>
                 </div>
                 
-                <Link to="/categorias">
+                <Link to={`/ebooks?category=${encodeURIComponent(category.title)}`}>
                   <Button 
                     className="w-full group-hover:bg-gray-900 transition-colors" 
                     variant="outline"
@@ -117,7 +118,7 @@ const EbookCategories = () => {
                   Começar Grátis
                 </Button>
               </Link>
-              <Link to="/planos">
+              <Link to="/plans">
                 <Button size="lg" className="bg-gray-900 hover:bg-gray-800">
                   Ver Planos Premium
                 </Button>

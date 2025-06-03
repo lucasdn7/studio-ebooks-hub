@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,9 +12,17 @@ import { Download, BookOpen, Star, Search, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Ebooks = () => {
+  const [searchParams] = useSearchParams();
+  const categoryFromUrl = searchParams.get('category') || "Todos";
+  
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
   const [selectedType, setSelectedType] = useState("Todos");
+
+  // Update selectedCategory when URL changes
+  useEffect(() => {
+    setSelectedCategory(categoryFromUrl);
+  }, [categoryFromUrl]);
 
   const categories = [
     "Todos",
@@ -162,9 +171,17 @@ const Ebooks = () => {
           <div className="text-center mb-12">
             <h1 className="text-4xl font-light text-gray-900 mb-4">
               Biblioteca de <span className="font-medium">E-books</span>
+              {selectedCategory !== "Todos" && (
+                <span className="block text-2xl font-normal text-gray-600 mt-2">
+                  {selectedCategory}
+                </span>
+              )}
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Acesse nossa coleção exclusiva de e-books especializados em arquitetura, design e marcenaria
+              {selectedCategory !== "Todos" 
+                ? `Explore nossa coleção de e-books especializados em ${selectedCategory}`
+                : "Acesse nossa coleção exclusiva de e-books especializados em arquitetura, design e marcenaria"
+              }
             </p>
           </div>
 
