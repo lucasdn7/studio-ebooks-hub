@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +20,9 @@ import {
   ThumbsDown,
   ArrowLeft,
   Target,
-  BarChart3
+  BarChart3,
+  Headphones,
+  Crown
 } from "lucide-react";
 
 const EbookDetail = () => {
@@ -160,6 +163,28 @@ const EbookDetail = () => {
                         }`}
                       >
                         {ebook.type === 'free' ? 'Baixar gratuitamente' : 'Adquirir agora'}
+                      </Button>
+
+                      <Link to={`/ebook/${id}/reader`} className="block">
+                        <Button 
+                          variant="outline" 
+                          size="lg" 
+                          className="w-full"
+                        >
+                          <BookOpen className="w-4 h-4 mr-2" />
+                          Modo Leitura
+                        </Button>
+                      </Link>
+
+                      <Button 
+                        variant="outline" 
+                        size="lg" 
+                        className="w-full"
+                        disabled
+                      >
+                        <Headphones className="w-4 h-4 mr-2" />
+                        Audiobook
+                        <Crown className="w-3 h-3 ml-2 text-yellow-600" />
                       </Button>
                       
                       <FavoriteButton 
