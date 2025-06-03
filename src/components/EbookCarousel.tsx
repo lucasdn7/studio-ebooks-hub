@@ -4,123 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import ContentBadge from "@/components/ContentBadge";
-import { Star, Download, BookOpen, TrendingUp, Flame, Sparkles } from "lucide-react";
+import { Star, Download, TrendingUp, Flame, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEbooks } from "@/hooks/useEbooks";
+import { getStorageUrl, formatDownloads, mapEbookType } from "@/utils/supabaseHelpers";
 
 const EbookCarousel = () => {
-  const carouselSections = [
-    {
-      title: "Novidades",
-      icon: Sparkles,
-      color: "text-blue-600",
-      books: [
-        {
-          id: 7,
-          title: "Arquitetura Biofílica: Conectando Natureza e Design",
-          author: "Arq. Lucas do Nascimento",
-          category: "Arquitetura",
-          rating: 5.0,
-          downloads: "0",
-          cover: "/placeholder.svg",
-          type: "premium" as const
-        },
-        {
-          id: 8,
-          title: "Inteligência Artificial na Arquitetura",
-          author: "Lucas do Nascimento",
-          category: "Tendências",
-          rating: 4.8,
-          downloads: "0",
-          cover: "/placeholder.svg",
-          type: "premium" as const
-        },
-        {
-          id: 9,
-          title: "Design Regenerativo: O Futuro Sustentável",
-          author: "Maria Luiza",
-          category: "Sustentabilidade",
-          rating: 4.7,
-          downloads: "0",
-          cover: "/placeholder.svg",
-          type: "free" as const
-        }
-      ]
-    },
-    {
-      title: "Mais Baixados",
-      icon: TrendingUp,
-      color: "text-green-600",
-      books: [
-        {
-          id: 1,
-          title: "Manual Completo de Arquitetura Residencial",
-          author: "Arq. Lucas do Nascimento",
-          category: "Arquitetura",
-          rating: 4.8,
-          downloads: "0",
-          cover: "/placeholder.svg",
-          type: "free" as const
-        },
-        {
-          id: 2,
-          title: "Design de Interiores: Tendências 2024",
-          author: "Designer Maira Luiza",
-          category: "Design de Interiores",
-          rating: 4.9,
-          downloads: "0",
-          cover: "/placeholder.svg",
-          type: "premium" as const
-        },
-        {
-          id: 4,
-          title: "Sustentabilidade na Arquitetura",
-          author: "Arq. Lucas do Nascimento",
-          category: "Arquitetura",
-          rating: 4.8,
-          downloads: "0",
-          cover: "/placeholder.svg",
-          type: "free" as const
-        }
-      ]
-    },
-    {
-      title: "Em Destaque",
-      icon: Flame,
-      color: "text-orange-600",
-      books: [
-        {
-          id: 3,
-          title: "Técnicas Avançadas de Marcenaria",
-          author: "Arq. Lucas do Nascimento",
-          category: "Marcenaria",
-          rating: 4.7,
-          downloads: "0",
-          cover: "/placeholder.svg",
-          type: "premium" as const
-        },
-        {
-          id: 5,
-          title: "Iluminação para Ambientes",
-          author: "Designer Maria Luiza",
-          category: "Design de Interiores",
-          rating: 4.6,
-          downloads: "0",
-          cover: "/placeholder.svg",
-          type: "premium" as const
-        },
-        {
-          id: 6,
-          title: "Móveis Funcionais para Espaços Pequenos",
-          author: "Marceneiro Pedro Lima",
-          category: "Marcenaria",
-          rating: 4.5,
-          downloads: "2.4k",
-          cover: "/placeholder.svg",
-          type: "free" as const
-        }
-      ]
-    }
-  ];
+  const { ebooks, loading, getNewEbooks, getPopularEbooks, getFeaturedEbooks } = useEbooks();
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -139,88 +29,130 @@ const EbookCarousel = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const carouselSections = [
+    {
+      title: "Novidades",
+      icon: Sparkles,
+      color: "text-blue-600",
+      books: getNewEbooks()
+    },
+    {
+      title: "Mais Baixados",
+      icon: TrendingUp,
+      color: "text-green-600",
+      books: getPopularEbooks()
+    },
+    {
+      title: "Em Destaque",
+      icon: Flame,
+      color: "text-orange-600",
+      books: getFeaturedEbooks().slice(0, 3)
+    }
+  ];
+
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {carouselSections.map((section, sectionIndex) => (
-          <div key={sectionIndex} className="mb-16">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-3">
-                <section.icon className={`w-6 h-6 ${section.color}`} />
-                <h2 className="text-2xl font-light text-gray-900">
-                  {section.title}
-                </h2>
+        {carouselSections.map((section, sectionIndex) => {
+          if (section.books.length === 0) return null;
+          
+          return (
+            <div key={sectionIndex} className="mb-16">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                  <section.icon className={`w-6 h-6 ${section.color}`} />
+                  <h2 className="text-2xl font-light text-gray-900">
+                    {section.title}
+                  </h2>
+                </div>
+                <Link to="/ebooks">
+                  <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+                    Ver todos
+                  </Button>
+                </Link>
               </div>
-              <Link to="/ebooks">
-                <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
-                  Ver todos
-                </Button>
-              </Link>
+              
+              <Carousel className="w-full">
+                <CarouselContent className="-ml-4">
+                  {section.books.map((book) => {
+                    const ebookType = mapEbookType(book.type, book.is_premium);
+                    const coverUrl = getStorageUrl('ebook-covers', book.cover || '');
+                    
+                    return (
+                      <CarouselItem key={book.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                        <Link to={`/ebook/${book.id}`}>
+                          <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer">
+                            <div className="relative">
+                              <div className="aspect-[3/4] bg-gray-200 rounded-t-lg overflow-hidden">
+                                <img 
+                                  src={coverUrl} 
+                                  alt={book.title}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                                <div className="absolute top-3 right-3">
+                                  <ContentBadge type={ebookType} />
+                                </div>
+                              </div>
+                            </div>
+
+                            <CardHeader className="pb-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Badge 
+                                  variant="outline" 
+                                  className={`text-xs ${getCategoryColor(book.category)}`}
+                                >
+                                  {book.category}
+                                </Badge>
+                                <div className="flex items-center text-sm text-gray-500">
+                                  <Star className="w-4 h-4 mr-1 fill-yellow-400 text-yellow-400" />
+                                  {book.rating || 0}
+                                </div>
+                              </div>
+                              <CardTitle className="text-lg font-medium text-gray-900 leading-snug line-clamp-2">
+                                {book.title}
+                              </CardTitle>
+                              <p className="text-sm text-gray-600">por {book.author}</p>
+                            </CardHeader>
+
+                            <CardContent className="pt-0">
+                              <div className="flex items-center justify-between text-xs text-gray-500">
+                                <div className="flex items-center">
+                                  <Download className="w-4 h-4 mr-1" />
+                                  {formatDownloads(book.downloads)}
+                                </div>
+                                <Button 
+                                  size="sm" 
+                                  variant={ebookType === 'free' ? 'default' : 'outline'}
+                                  className="text-xs"
+                                >
+                                  {ebookType === 'free' ? 'Baixar' : 'Acessar'}
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      </CarouselItem>
+                    );
+                  })}
+                </CarouselContent>
+                <CarouselPrevious className="left-2" />
+                <CarouselNext className="right-2" />
+              </Carousel>
             </div>
-            
-            <Carousel className="w-full">
-              <CarouselContent className="-ml-4">
-                {section.books.map((book) => (
-                  <CarouselItem key={book.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                    <Link to={`/ebook/${book.id}`}>
-                      <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer">
-                        <div className="relative">
-                          <div className="aspect-[3/4] bg-gray-200 rounded-t-lg overflow-hidden">
-                            <img 
-                              src={book.cover} 
-                              alt={book.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                            <div className="absolute top-3 right-3">
-                              <ContentBadge type={book.type} />
-                            </div>
-                          </div>
-                        </div>
-
-                        <CardHeader className="pb-2">
-                          <div className="flex items-center justify-between mb-2">
-                            <Badge 
-                              variant="outline" 
-                              className={`text-xs ${getCategoryColor(book.category)}`}
-                            >
-                              {book.category}
-                            </Badge>
-                            <div className="flex items-center text-sm text-gray-500">
-                              <Star className="w-4 h-4 mr-1 fill-yellow-400 text-yellow-400" />
-                              {book.rating}
-                            </div>
-                          </div>
-                          <CardTitle className="text-lg font-medium text-gray-900 leading-snug line-clamp-2">
-                            {book.title}
-                          </CardTitle>
-                          <p className="text-sm text-gray-600">por {book.author}</p>
-                        </CardHeader>
-
-                        <CardContent className="pt-0">
-                          <div className="flex items-center justify-between text-xs text-gray-500">
-                            <div className="flex items-center">
-                              <Download className="w-4 h-4 mr-1" />
-                              {book.downloads}
-                            </div>
-                            <Button 
-                              size="sm" 
-                              variant={book.type === 'free' ? 'default' : 'outline'}
-                              className="text-xs"
-                            >
-                              {book.type === 'free' ? 'Baixar' : 'Acessar'}
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="left-2" />
-              <CarouselNext className="right-2" />
-            </Carousel>
-          </div>
-        ))}
+          );
+        })}
         
         {/* CTA Section */}
         <div className="text-center mt-16">
@@ -229,7 +161,7 @@ const EbookCarousel = () => {
               Pronto para expandir seus conhecimentos?
             </h3>
             <p className="text-lg text-gray-600 mb-8">
-              Acesse nossa biblioteca completa com mais de 50 e-books especializados
+              Acesse nossa biblioteca completa com e-books especializados
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/ebooks">

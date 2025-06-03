@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +11,8 @@ import ContentBadge from "@/components/ContentBadge";
 import FavoriteButton from "@/components/FavoriteButton";
 import { Download, BookOpen, Star, Search, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEbooks } from "@/hooks/useEbooks";
+import { getStorageUrl, formatDownloads, mapEbookType } from "@/utils/supabaseHelpers";
 
 const Ebooks = () => {
   const [searchParams] = useSearchParams();
@@ -18,6 +21,8 @@ const Ebooks = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
   const [selectedType, setSelectedType] = useState("Todos");
+
+  const { ebooks, loading, error } = useEbooks();
 
   // Update selectedCategory when URL changes
   useEffect(() => {
@@ -35,99 +40,6 @@ const Ebooks = () => {
   ];
 
   const types = ["Todos", "Gratuito", "Premium"];
-
-  const ebooks = [
-    {
-      id: 1,
-      title: "Manual Completo de Arquitetura Residencial",
-      author: "Arq. Maria Silva",
-      category: "Arquitetura",
-      pages: 120,
-      rating: 4.8,
-      downloads: "2.3k",
-      cover: "/placeholder.svg",
-      description: "Guia completo para projetos residenciais modernos com técnicas sustentáveis.",
-      type: "free" as const,
-      featured: true,
-      difficulty: "Intermediário",
-      readingTime: 180
-    },
-    {
-      id: 2,
-      title: "Design de Interiores: Tendências 2024",
-      author: "Designer João Santos",
-      category: "Design de Interiores",
-      pages: 85,
-      rating: 4.9,
-      downloads: "3.1k",
-      cover: "/placeholder.svg",
-      description: "As principais tendências em design de interiores para o ano de 2024.",
-      type: "premium" as const,
-      featured: false,
-      difficulty: "Iniciante",
-      readingTime: 120
-    },
-    {
-      id: 3,
-      title: "Técnicas Avançadas de Marcenaria",
-      author: "Mestre Carlos Oliveira",
-      category: "Marcenaria",
-      pages: 95,
-      rating: 4.7,
-      downloads: "1.8k",
-      cover: "/placeholder.svg",
-      description: "Técnicas profissionais para móveis sob medida e acabamentos especiais.",
-      type: "premium" as const,
-      featured: true,
-      difficulty: "Avançado",
-      readingTime: 150
-    },
-    {
-      id: 4,
-      title: "Arquitetura sustentável: princípios e práticas",
-      author: "Arq. Lucas do Nascimento",
-      category: "Sustentabilidade",
-      pages: 42,
-      rating: 4.8,
-      downloads: "2.7k",
-      cover: "https://hnlbvgnnfdewyawnoevm.supabase.co/storage/v1/object/sign/ebooks/capa%20ebooks/Capa%20ebook3.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lYTcxOTRjMi04NjljLTRkN2QtYWFiZS0wMmEzMzBlYjk5ZGYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJlYm9va3MvY2FwYSBlYm9va3MvQ2FwYSBlYm9vazMucG5nIiwiaWF0IjoxNzQ4OTg1Njk0LCJleHAiOjE3ODA1MjE2OTR9.k-EMjrhsLQevn26T5Kuf-AtUjZRcX_VAyZBHFrq7RMw",
-      description: "Estratégias para projetos arquitetônicos sustentáveis e eficientes.",
-      type: "free" as const,
-      featured: false,
-      difficulty: "Intermediário",
-      readingTime: 165
-    },
-    {
-      id: 5,
-      title: "Iluminação para Ambientes",
-      author: "Designer Luz Pereira",
-      category: "Design de Interiores",
-      pages: 75,
-      rating: 4.6,
-      downloads: "1.9k",
-      cover: "/placeholder.svg",
-      description: "Como criar projetos de iluminação que transformam ambientes.",
-      type: "premium" as const,
-      featured: false,
-      difficulty: "Intermediário",
-      readingTime: 100
-    },
-    {
-      id: 6,
-      title: "Móveis Funcionais para Espaços Pequenos",
-      author: "Marceneiro Pedro Lima",
-      category: "Marcenaria",
-      pages: 68,
-      rating: 4.5,
-      downloads: "1.4k",
-      cover: "/placeholder.svg",
-      description: "Soluções criativas em marcenaria para otimizar espaços reduzidos.",
-      type: "free" as const,
-      featured: false,
-      difficulty: "Iniciante",
-      readingTime: 90
-    }
-  ];
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -151,16 +63,47 @@ const Ebooks = () => {
   const filteredEbooks = ebooks.filter(ebook => {
     const matchesSearch = ebook.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          ebook.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         ebook.description.toLowerCase().includes(searchTerm.toLowerCase());
+                         (ebook.description || '').toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesCategory = selectedCategory === "Todos" || ebook.category === selectedCategory;
     
+    const ebookType = mapEbookType(ebook.type, ebook.is_premium);
     const matchesType = selectedType === "Todos" || 
-                       (selectedType === "Gratuito" && ebook.type === "free") ||
-                       (selectedType === "Premium" && ebook.type === "premium");
+                       (selectedType === "Gratuito" && ebookType === "free") ||
+                       (selectedType === "Premium" && ebookType === "premium");
     
     return matchesSearch && matchesCategory && matchesType;
   });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Carregando e-books...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">Erro ao carregar e-books: {error}</p>
+            <Button onClick={() => window.location.reload()}>Tentar novamente</Button>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -241,84 +184,89 @@ const Ebooks = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredEbooks.map((ebook) => (
-              <Link key={ebook.id} to={`/ebook/${ebook.id}`}>
-                <Card className={`group hover:shadow-lg transition-all duration-300 ${ebook.featured ? 'ring-2 ring-gray-900 ring-opacity-10' : ''}`}>
-                  {ebook.featured && (
-                    <div className="absolute -top-3 left-4 z-10">
-                      <Badge className="bg-gray-900 text-white">
-                        <Star className="w-3 h-3 mr-1" />
-                        Destaque
-                      </Badge>
-                    </div>
-                  )}
-                  
-                  <div className="relative">
-                    <div className="aspect-[3/4] bg-gray-200 rounded-t-lg overflow-hidden">
-                      <img 
-                        src={ebook.cover} 
-                        alt={ebook.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute top-3 right-3">
-                        <ContentBadge type={ebook.type} />
+            {filteredEbooks.map((ebook) => {
+              const ebookType = mapEbookType(ebook.type, ebook.is_premium);
+              const coverUrl = getStorageUrl('ebook-covers', ebook.cover || '');
+              
+              return (
+                <Link key={ebook.id} to={`/ebook/${ebook.id}`}>
+                  <Card className={`group hover:shadow-lg transition-all duration-300 ${ebook.featured ? 'ring-2 ring-gray-900 ring-opacity-10' : ''}`}>
+                    {ebook.featured && (
+                      <div className="absolute -top-3 left-4 z-10">
+                        <Badge className="bg-gray-900 text-white">
+                          <Star className="w-3 h-3 mr-1" />
+                          Destaque
+                        </Badge>
                       </div>
-                      <div className="absolute top-3 left-3">
-                        <FavoriteButton 
-                          ebook={{
-                            id: ebook.id,
-                            title: ebook.title,
-                            author: ebook.author,
-                            category: ebook.category,
-                            cover: ebook.cover
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge 
-                        variant="outline" 
-                        className={`text-xs ${getCategoryColor(ebook.category)}`}
-                      >
-                        {ebook.category}
-                      </Badge>
-                      <div className="flex items-center text-sm text-gray-500">
-                        <Star className="w-4 h-4 mr-1 fill-yellow-400 text-yellow-400" />
-                        {ebook.rating}
-                      </div>
-                    </div>
-                    <CardTitle className="text-lg font-medium text-gray-900 leading-snug">
-                      {ebook.title}
-                    </CardTitle>
-                    <p className="text-sm text-gray-600">por {ebook.author}</p>
-                  </CardHeader>
-
-                  <CardContent className="pt-0">
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                      {ebook.description}
-                    </p>
+                    )}
                     
-                    <div className="flex items-center justify-between mb-4 text-xs text-gray-500">
-                      <div className="flex items-center">
-                        <BookOpen className="w-4 h-4 mr-1" />
-                        {ebook.pages} páginas
-                      </div>
-                      <div className="flex items-center">
-                        <Download className="w-4 h-4 mr-1" />
-                        {ebook.downloads}
+                    <div className="relative">
+                      <div className="aspect-[3/4] bg-gray-200 rounded-t-lg overflow-hidden">
+                        <img 
+                          src={coverUrl} 
+                          alt={ebook.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute top-3 right-3">
+                          <ContentBadge type={ebookType} />
+                        </div>
+                        <div className="absolute top-3 left-3">
+                          <FavoriteButton 
+                            ebook={{
+                              id: ebook.id,
+                              title: ebook.title,
+                              author: ebook.author,
+                              category: ebook.category,
+                              cover: coverUrl
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
 
-                    <Button className="w-full" variant={ebook.type === 'free' ? 'default' : 'outline'}>
-                      {ebook.type === 'free' ? 'Download Gratuito' : 'Acessar Premium'}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge 
+                          variant="outline" 
+                          className={`text-xs ${getCategoryColor(ebook.category)}`}
+                        >
+                          {ebook.category}
+                        </Badge>
+                        <div className="flex items-center text-sm text-gray-500">
+                          <Star className="w-4 h-4 mr-1 fill-yellow-400 text-yellow-400" />
+                          {ebook.rating || 0}
+                        </div>
+                      </div>
+                      <CardTitle className="text-lg font-medium text-gray-900 leading-snug">
+                        {ebook.title}
+                      </CardTitle>
+                      <p className="text-sm text-gray-600">por {ebook.author}</p>
+                    </CardHeader>
+
+                    <CardContent className="pt-0">
+                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                        {ebook.description}
+                      </p>
+                      
+                      <div className="flex items-center justify-between mb-4 text-xs text-gray-500">
+                        <div className="flex items-center">
+                          <BookOpen className="w-4 h-4 mr-1" />
+                          {ebook.pages || 0} páginas
+                        </div>
+                        <div className="flex items-center">
+                          <Download className="w-4 h-4 mr-1" />
+                          {formatDownloads(ebook.downloads)}
+                        </div>
+                      </div>
+
+                      <Button className="w-full" variant={ebookType === 'free' ? 'default' : 'outline'}>
+                        {ebookType === 'free' ? 'Download Gratuito' : 'Acessar Premium'}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

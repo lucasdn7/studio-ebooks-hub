@@ -6,3 +6,4 @@ export { useKits } from './useKits';
 export { useFavorites } from './useFavorites';
 export { useFavoritesSupabase } from './useFavoritesSupabase';
 export { useAchievementsSupabase } from './useAchievementsSupabase';
+export { useEbooks } from './useEbooks';

@@ -47,42 +47,66 @@ export type Database = {
       }
       ebooks: {
         Row: {
+          audio_url: string | null
           author: string
           category: string
           cover: string | null
           created_at: string | null
           description: string | null
+          difficulty: string | null
+          downloads: number | null
+          featured: boolean | null
           file_url: string | null
           id: number
           is_premium: boolean | null
+          pages: number | null
           price: number | null
+          rating: number | null
+          reading_time: number | null
           title: string
+          type: string | null
           updated_at: string | null
         }
         Insert: {
+          audio_url?: string | null
           author: string
           category: string
           cover?: string | null
           created_at?: string | null
           description?: string | null
+          difficulty?: string | null
+          downloads?: number | null
+          featured?: boolean | null
           file_url?: string | null
           id?: number
           is_premium?: boolean | null
+          pages?: number | null
           price?: number | null
+          rating?: number | null
+          reading_time?: number | null
           title: string
+          type?: string | null
           updated_at?: string | null
         }
         Update: {
+          audio_url?: string | null
           author?: string
           category?: string
           cover?: string | null
           created_at?: string | null
           description?: string | null
+          difficulty?: string | null
+          downloads?: number | null
+          featured?: boolean | null
           file_url?: string | null
           id?: number
           is_premium?: boolean | null
+          pages?: number | null
           price?: number | null
+          rating?: number | null
+          reading_time?: number | null
           title?: string
+          type?: string | null
           updated_at?: string | null
         }
         Relationships: []

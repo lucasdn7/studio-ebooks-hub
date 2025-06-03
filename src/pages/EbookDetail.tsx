@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,38 +24,43 @@ import {
   Headphones,
   Crown
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { getStorageUrl, formatDownloads, mapEbookType } from "@/utils/supabaseHelpers";
+import type { Tables } from "@/integrations/supabase/types";
+
+type Ebook = Tables<'ebooks'>;
 
 const EbookDetail = () => {
   const { id } = useParams();
+  const [ebook, setEbook] = useState<Ebook | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [userRating, setUserRating] = useState(0);
   const [comment, setComment] = useState("");
   const [liked, setLiked] = useState<boolean | null>(null);
 
-  // Mock data - em produção viria de uma API
-  const ebook = {
-    id: 1,
-    title: "Manual Completo de Arquitetura Residencial",
-    author: "Arq. Maria Silva",
-    category: "Arquitetura",
-    pages: 120,
-    rating: 4.8,
-    downloads: "2.3k",
-    cover: "/placeholder.svg",
-    description: "Guia completo para projetos residenciais modernos com técnicas sustentáveis e inovadoras. Este manual aborda desde os conceitos fundamentais até as práticas mais avançadas da arquitetura residencial contemporânea.",
-    benefits: [
-      "Domine técnicas avançadas de projeto residencial",
-      "Aprenda sobre sustentabilidade e eficiência energética",
-      "Desenvolva habilidades em design bioclimático",
-      "Conheça as tendências atuais do mercado"
-    ],
-    targetAudience: "Arquitetos, estudantes de arquitetura e profissionais da área de construção",
-    difficulty: "Intermediário",
-    readingTime: 180,
-    type: "free" as const,
-    featured: true,
-    totalRatings: 342,
-    likes: 89,
-    dislikes: 12
+  useEffect(() => {
+    if (id) {
+      fetchEbook(id);
+    }
+  }, [id]);
+
+  const fetchEbook = async (ebookId: string) => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('ebooks')
+        .select('*')
+        .eq('id', parseInt(ebookId))
+        .single();
+
+      if (error) throw error;
+      setEbook(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao carregar e-book');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const difficultyColors = {
@@ -73,12 +78,46 @@ const EbookDetail = () => {
   };
 
   const handleSubmitFeedback = () => {
-    // Aqui seria enviado o feedback para a API
     console.log('Feedback:', { rating: userRating, comment, liked });
     setComment("");
     setUserRating(0);
     setLiked(null);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Carregando e-book...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !ebook) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">Erro ao carregar e-book: {error}</p>
+            <Link to="/ebooks">
+              <Button>Voltar para biblioteca</Button>
+            </Link>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  const ebookType = mapEbookType(ebook.type, ebook.is_premium);
+  const coverUrl = getStorageUrl('ebook-covers', ebook.cover || '');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -98,12 +137,12 @@ const EbookDetail = () => {
                 <div className="relative">
                   <div className="aspect-[3/4] bg-gray-200 rounded-t-lg overflow-hidden">
                     <img 
-                      src={ebook.cover} 
+                      src={coverUrl} 
                       alt={ebook.title}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-4 right-4">
-                      <ContentBadge type={ebook.type} />
+                      <ContentBadge type={ebookType} />
                     </div>
                     <div className="absolute top-4 left-4">
                       <FavoriteButton 
@@ -112,7 +151,7 @@ const EbookDetail = () => {
                           title: ebook.title,
                           author: ebook.author,
                           category: ebook.category,
-                          cover: ebook.cover
+                          cover: coverUrl
                         }}
                       />
                     </div>
@@ -124,45 +163,45 @@ const EbookDetail = () => {
                     <div className="flex items-center justify-between">
                       <Badge 
                         variant="outline" 
-                        className={difficultyColors[ebook.difficulty as keyof typeof difficultyColors]}
+                        className={difficultyColors[ebook.difficulty as keyof typeof difficultyColors] || difficultyColors["Iniciante"]}
                       >
                         <BarChart3 className="w-3 h-3 mr-1" />
-                        {ebook.difficulty}
+                        {ebook.difficulty || "Iniciante"}
                       </Badge>
                       <div className="flex items-center text-sm text-gray-500">
                         <Star className="w-4 h-4 mr-1 fill-yellow-400 text-yellow-400" />
-                        {ebook.rating} ({ebook.totalRatings})
+                        {ebook.rating || 0}
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                       <div className="flex items-center">
                         <BookOpen className="w-4 h-4 mr-2" />
-                        {ebook.pages} páginas
+                        {ebook.pages || 0} páginas
                       </div>
                       <div className="flex items-center">
                         <Clock className="w-4 h-4 mr-2" />
-                        {ebook.readingTime} min
+                        {ebook.reading_time || 0} min
                       </div>
                       <div className="flex items-center">
                         <Download className="w-4 h-4 mr-2" />
-                        {ebook.downloads}
+                        {formatDownloads(ebook.downloads)}
                       </div>
                       <div className="flex items-center">
                         <TrendingUp className="w-4 h-4 mr-2" />
-                        Popular
+                        {ebook.featured ? 'Destaque' : 'Popular'}
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <Button 
                         size="lg" 
-                        className={`w-full ${ebook.type === 'free' 
+                        className={`w-full ${ebookType === 'free' 
                           ? 'bg-gray-900 hover:bg-gray-800' 
                           : 'bg-blue-600 hover:bg-blue-700'
                         }`}
                       >
-                        {ebook.type === 'free' ? 'Baixar gratuitamente' : 'Adquirir agora'}
+                        {ebookType === 'free' ? 'Baixar gratuitamente' : 'Adquirir agora'}
                       </Button>
 
                       <Link to={`/ebook/${id}/reader`} className="block">
@@ -193,7 +232,7 @@ const EbookDetail = () => {
                           title: ebook.title,
                           author: ebook.author,
                           category: ebook.category,
-                          cover: ebook.cover
+                          cover: coverUrl
                         }}
                         variant="button"
                         className="w-full"
@@ -225,35 +264,8 @@ const EbookDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-gray-700 leading-relaxed mb-6">
-                      {ebook.description}
+                      {ebook.description || 'Descrição não disponível.'}
                     </p>
-                    
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div>
-                        <h4 className="font-medium text-gray-900 mb-3 flex items-center">
-                          <Target className="w-4 h-4 mr-2 text-blue-600" />
-                          O que você vai aprender
-                        </h4>
-                        <ul className="space-y-2">
-                          {ebook.benefits.map((benefit, index) => (
-                            <li key={index} className="text-sm text-gray-600 flex items-start">
-                              <span className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                              {benefit}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      
-                      <div>
-                        <h4 className="font-medium text-gray-900 mb-3 flex items-center">
-                          <Users className="w-4 h-4 mr-2 text-green-600" />
-                          Público-alvo
-                        </h4>
-                        <p className="text-sm text-gray-600">
-                          {ebook.targetAudience}
-                        </p>
-                      </div>
-                    </div>
                   </CardContent>
                 </Card>
 
@@ -302,7 +314,7 @@ const EbookDetail = () => {
                           }`}
                         >
                           <ThumbsUp className="w-4 h-4" />
-                          Gostei ({ebook.likes})
+                          Gostei
                         </button>
                         <button
                           onClick={() => handleLike(false)}
@@ -313,7 +325,7 @@ const EbookDetail = () => {
                           }`}
                         >
                           <ThumbsDown className="w-4 h-4" />
-                          Não gostei ({ebook.dislikes})
+                          Não gostei
                         </button>
                       </div>
                     </div>
