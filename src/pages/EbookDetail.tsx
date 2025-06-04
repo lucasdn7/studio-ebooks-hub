@@ -111,7 +111,7 @@ const EbookDetail = () => {
                 <EbookHeader ebook={ebook} />
                 <EbookLearningPoints ebook={ebook} />
                 <EbookDescription ebook={ebook} />
-                <EbookRating />
+                <EbookRating ebookId={ebook.id} />
               </div>
             </div>
           </div>

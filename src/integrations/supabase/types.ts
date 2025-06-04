@@ -45,6 +45,47 @@ export type Database = {
         }
         Relationships: []
       }
+      ebook_ratings: {
+        Row: {
+          comment: string | null
+          created_at: string
+          ebook_id: number
+          id: string
+          liked: boolean | null
+          rating: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          ebook_id: number
+          id?: string
+          liked?: boolean | null
+          rating: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          ebook_id?: number
+          id?: string
+          liked?: boolean | null
+          rating?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ebook_ratings_ebook_id_fkey"
+            columns: ["ebook_id"]
+            isOneToOne: false
+            referencedRelation: "ebooks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ebooks: {
         Row: {
           audio_url: string | null
