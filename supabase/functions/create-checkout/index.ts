@@ -56,6 +56,7 @@ serve(async (req) => {
     let sessionConfig: any = {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
+      client_reference_id: user.id,
       success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/payment-cancelled`,
     };
@@ -115,16 +116,35 @@ serve(async (req) => {
       ];
 
       // Create order record
-      await supabaseClient.from("orders").insert({
+      const { data: order, error: orderError } = await supabaseClient.from("orders").insert({
         user_id: user.id,
         product_type,
         product_id,
         amount: price,
         status: "pending",
-      });
+        currency: "brl",
+      }).select().single();
+
+      if (orderError) {
+        logStep("Error creating order", orderError);
+        throw new Error(`Failed to create order: ${orderError.message}`);
+      }
+      
+      logStep("Order created", { orderId: order.id });
     }
 
     const session = await stripe.checkout.sessions.create(sessionConfig);
+    
+    // Update order with session ID for one-time payments
+    if (payment_type !== "subscription") {
+      await supabaseClient
+        .from("orders")
+        .update({ stripe_session_id: session.id })
+        .eq("user_id", user.id)
+        .eq("product_id", product_id)
+        .eq("status", "pending");
+    }
+
     logStep("Checkout session created", { sessionId: session.id });
 
     return new Response(JSON.stringify({ url: session.url }), {
