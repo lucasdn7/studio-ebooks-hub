@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -67,7 +67,13 @@ const EbookDetail = () => {
         <Header />
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="text-center">
-            <p className="text-red-600 mb-4">Erro ao carregar e-book: {error}</p>
+            <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h2 className="text-2xl font-light text-gray-900 mb-4">
+              Ops! Este e-book não foi encontrado
+            </h2>
+            <p className="text-gray-600 mb-6">
+              O e-book que você está procurando não existe ou foi removido.
+            </p>
             <Link to="/ebooks">
               <Button>Voltar para biblioteca</Button>
             </Link>

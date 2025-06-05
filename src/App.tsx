@@ -11,6 +11,7 @@ import Ebooks from "./pages/Ebooks";
 import EbookDetail from "./pages/EbookDetail";
 import EbookReader from "./pages/EbookReader";
 import EbookBundles from "./pages/EbookBundles";
+import KitDetail from "./pages/KitDetail";
 import Categories from "./pages/Categories";
 import Plans from "./pages/Plans";
 import Contact from "./pages/Contact";
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/ebook/:id" element={<EbookDetail />} />
             <Route path="/ebook/:id/reader" element={<EbookReader />} />
             <Route path="/bundles" element={<EbookBundles />} />
+            <Route path="/kit/:id" element={<KitDetail />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/plans" element={<Plans />} />
             <Route path="/contact" element={<Contact />} />
