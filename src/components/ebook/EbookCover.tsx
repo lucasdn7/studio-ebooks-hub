@@ -51,7 +51,7 @@ const EbookCover = ({ ebook, coverUrl, ebookType }: EbookCoverProps) => {
           </div>
           {ebook.difficulty && (
             <div className="absolute top-3 left-3">
-              <EbookDifficultyBadge difficulty={ebook.difficulty} />
+              <EbookDifficultyBadge ebook={ebook} />
             </div>
           )}
         </div>

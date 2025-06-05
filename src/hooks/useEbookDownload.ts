@@ -70,18 +70,34 @@ export const useEbookDownload = () => {
       // Limpar URL objeto
       window.URL.revokeObjectURL(url);
 
-      // Incrementar contador de downloads
-      await supabase
+      // Incrementar contador de downloads usando a sintaxe correta do Supabase
+      const { data: currentEbook } = await supabase
         .from('ebooks')
-        .update({ downloads: supabase.raw('downloads + 1') })
-        .eq('id', ebookId);
+        .select('downloads')
+        .eq('id', ebookId)
+        .single();
+
+      if (currentEbook) {
+        await supabase
+          .from('ebooks')
+          .update({ downloads: (currentEbook.downloads || 0) + 1 })
+          .eq('id', ebookId);
+      }
 
       // Se o usuário estiver logado, atualizar suas estatísticas
       if (user) {
-        await supabase
+        const { data: currentStats } = await supabase
           .from('user_stats')
-          .update({ ebooks_read: supabase.raw('ebooks_read + 1') })
-          .eq('user_id', user.id);
+          .select('ebooks_read')
+          .eq('user_id', user.id)
+          .single();
+
+        if (currentStats) {
+          await supabase
+            .from('user_stats')
+            .update({ ebooks_read: (currentStats.ebooks_read || 0) + 1 })
+            .eq('user_id', user.id);
+        }
       }
 
       toast.success("Download iniciado com sucesso!");
