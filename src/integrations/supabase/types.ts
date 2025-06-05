@@ -45,6 +45,120 @@ export type Database = {
         }
         Relationships: []
       }
+      content_creators: {
+        Row: {
+          bank_details: Json | null
+          bio: string | null
+          created_at: string | null
+          id: string
+          social_links: Json | null
+          total_earnings: number | null
+          total_sales: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bank_details?: Json | null
+          bio?: string | null
+          created_at?: string | null
+          id?: string
+          social_links?: Json | null
+          total_earnings?: number | null
+          total_sales?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bank_details?: Json | null
+          bio?: string | null
+          created_at?: string | null
+          id?: string
+          social_links?: Json | null
+          total_earnings?: number | null
+          total_sales?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      creator_bundles: {
+        Row: {
+          commission_rate: number | null
+          created_at: string | null
+          creator_id: string
+          id: string
+          kit_id: string
+        }
+        Insert: {
+          commission_rate?: number | null
+          created_at?: string | null
+          creator_id: string
+          id?: string
+          kit_id: string
+        }
+        Update: {
+          commission_rate?: number | null
+          created_at?: string | null
+          creator_id?: string
+          id?: string
+          kit_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_bundles_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "content_creators"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creator_bundles_kit_id_fkey"
+            columns: ["kit_id"]
+            isOneToOne: false
+            referencedRelation: "kits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_ebooks: {
+        Row: {
+          commission_rate: number | null
+          created_at: string | null
+          creator_id: string
+          ebook_id: number
+          id: string
+        }
+        Insert: {
+          commission_rate?: number | null
+          created_at?: string | null
+          creator_id: string
+          ebook_id: number
+          id?: string
+        }
+        Update: {
+          commission_rate?: number | null
+          created_at?: string | null
+          creator_id?: string
+          ebook_id?: number
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_ebooks_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "content_creators"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creator_ebooks_ebook_id_fkey"
+            columns: ["ebook_id"]
+            isOneToOne: false
+            referencedRelation: "ebooks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ebook_ratings: {
         Row: {
           comment: string | null
@@ -93,6 +207,7 @@ export type Database = {
           category: string
           cover: string | null
           created_at: string | null
+          creator_id: string | null
           description: string | null
           difficulty: string | null
           downloads: number | null
@@ -114,6 +229,7 @@ export type Database = {
           category: string
           cover?: string | null
           created_at?: string | null
+          creator_id?: string | null
           description?: string | null
           difficulty?: string | null
           downloads?: number | null
@@ -135,6 +251,7 @@ export type Database = {
           category?: string
           cover?: string | null
           created_at?: string | null
+          creator_id?: string | null
           description?: string | null
           difficulty?: string | null
           downloads?: number | null
@@ -150,7 +267,15 @@ export type Database = {
           type?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "ebooks_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "content_creators"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       favorites: {
         Row: {
@@ -185,6 +310,7 @@ export type Database = {
         Row: {
           cover_image: string | null
           created_at: string
+          creator_id: string | null
           description: string | null
           ebook_ids: number[] | null
           id: string
@@ -196,6 +322,7 @@ export type Database = {
         Insert: {
           cover_image?: string | null
           created_at?: string
+          creator_id?: string | null
           description?: string | null
           ebook_ids?: number[] | null
           id?: string
@@ -207,6 +334,7 @@ export type Database = {
         Update: {
           cover_image?: string | null
           created_at?: string
+          creator_id?: string | null
           description?: string | null
           ebook_ids?: number[] | null
           id?: string
@@ -215,7 +343,15 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "kits_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "content_creators"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       orders: {
         Row: {
@@ -282,6 +418,57 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      sales_analytics: {
+        Row: {
+          creator_id: string
+          gross_amount: number
+          id: string
+          net_amount: number
+          order_id: string
+          platform_commission: number
+          product_id: string
+          product_type: string
+          sale_date: string | null
+        }
+        Insert: {
+          creator_id: string
+          gross_amount: number
+          id?: string
+          net_amount: number
+          order_id: string
+          platform_commission: number
+          product_id: string
+          product_type: string
+          sale_date?: string | null
+        }
+        Update: {
+          creator_id?: string
+          gross_amount?: number
+          id?: string
+          net_amount?: number
+          order_id?: string
+          platform_commission?: number
+          product_id?: string
+          product_type?: string
+          sale_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_analytics_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "content_creators"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_analytics_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscriptions: {
         Row: {
@@ -372,6 +559,7 @@ export type Database = {
           id: string
           is_premium: boolean | null
           login_count: number | null
+          role: Database["public"]["Enums"]["user_role"] | null
           streak_days: number | null
           total_points: number | null
           updated_at: string | null
@@ -388,6 +576,7 @@ export type Database = {
           id?: string
           is_premium?: boolean | null
           login_count?: number | null
+          role?: Database["public"]["Enums"]["user_role"] | null
           streak_days?: number | null
           total_points?: number | null
           updated_at?: string | null
@@ -404,6 +593,7 @@ export type Database = {
           id?: string
           is_premium?: boolean | null
           login_count?: number | null
+          role?: Database["public"]["Enums"]["user_role"] | null
           streak_days?: number | null
           total_points?: number | null
           updated_at?: string | null
@@ -416,10 +606,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_creator_data: {
+        Args: { user_uuid: string }
+        Returns: {
+          creator_id: string
+          total_ebooks: number
+          total_bundles: number
+          can_create_bundles: boolean
+        }[]
+      }
+      is_creator: {
+        Args: { user_uuid: string }
+        Returns: boolean
+      }
     }
     Enums: {
       achievement_type: "badge" | "medal"
+      user_role: "user" | "premium" | "creator" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -536,6 +739,7 @@ export const Constants = {
   public: {
     Enums: {
       achievement_type: ["badge", "medal"],
+      user_role: ["user", "premium", "creator", "admin"],
     },
   },
 } as const

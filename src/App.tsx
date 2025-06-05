@@ -17,6 +17,7 @@ import Plans from "./pages/Plans";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import MemberArea from "./pages/MemberArea";
+import CreatorDashboard from "./pages/CreatorDashboard";
 import AuthPage from "./components/AuthPage";
 import NotFound from "./pages/NotFound";
 import PaymentSuccess from "./pages/PaymentSuccess";
@@ -45,6 +46,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/member-area" element={<MemberArea />} />
+            <Route path="/creator-dashboard" element={<CreatorDashboard />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/payment-cancelled" element={<PaymentCancelled />} />
             <Route path="*" element={<NotFound />} />

@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -64,6 +64,12 @@ const Header = () => {
                       Área do Membro
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/creator-dashboard" className="flex items-center">
+                      <Crown className="w-4 h-4 mr-2" />
+                      Área do Criador
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={signOut}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Sair
@@ -106,6 +112,15 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
+              {user && (
+                <Link
+                  to="/creator-dashboard"
+                  className="block px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Área do Criador
+                </Link>
+              )}
               {!user && (
                 <Link
                   to="/auth"
