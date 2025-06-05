@@ -1,63 +1,63 @@
+
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Download, BookOpen, Star, CheckCircle, Gift } from "lucide-react";
+import BundleCard from "@/components/bundles/BundleCard";
+import EbookPaymentFlow from "@/components/payment/EbookPaymentFlow";
+import { Search, Package, Star, ShoppingCart } from "lucide-react";
 import { useKits } from "@/hooks/useKits";
-import PaymentButton from "@/components/PaymentButton";
+import type { Tables } from "@/integrations/supabase/types";
+
+type Kit = Tables<'kits'>;
 
 const EbookBundles = () => {
-  const { data: kits, isLoading } = useKits();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedBundle, setSelectedBundle] = useState<Kit | null>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const { kits, loading, error } = useKits();
 
-  const upcomingFeatures = [
-    {
-      title: "Audiobooks",
-      description: "Escute seus e-books favoritos em qualquer lugar",
-      icon: "🎧",
-      status: "Em breve"
-    },
-    {
-      title: "Integração Kindle",
-      description: "Sincronize sua biblioteca diretamente com o Kindle",
-      icon: "📱",
-      status: "Em breve"
-    },
-    {
-      title: "Realidade Aumentada",
-      description: "Visualize projetos em 3D através do seu celular",
-      icon: "🥽",
-      status: "Em breve"
-    },
-    {
-      title: "Consultoria IA",
-      description: "Assistant inteligente para seus projetos",
-      icon: "🤖",
-      status: "Em desenvolvimento"
-    }
-  ];
+  const filteredBundles = kits.filter(kit =>
+    kit.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (kit.description || '').toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case "Arquitetura":
-        return "bg-blue-100 text-blue-700 border-blue-200";
-      case "Design de Interiores":
-        return "bg-green-100 text-green-700 border-green-200";
-      case "Marcenaria":
-        return "bg-amber-100 text-amber-700 border-amber-200";
-      default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
-    }
+  const handlePurchase = (bundle: Kit) => {
+    setSelectedBundle(bundle);
+    setShowPaymentModal(true);
   };
 
-  if (isLoading) {
+  const handlePurchaseSuccess = () => {
+    setShowPaymentModal(false);
+    setSelectedBundle(null);
+  };
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="flex items-center justify-center py-20">
+        <div className="flex items-center justify-center min-h-[50vh]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Carregando kits...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Carregando kits...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">Erro ao carregar kits: {error}</p>
+            <Button onClick={() => window.location.reload()}>Tentar novamente</Button>
           </div>
         </div>
         <Footer />
@@ -73,89 +73,130 @@ const EbookBundles = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-light text-gray-900 mb-4">
-              Pacotes de <span className="font-medium">E-books</span>
+              Kits de <span className="font-medium">E-books</span>
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Kits completos com e-books, checklists e materiais bonus para acelerar seu aprendizado
+              Coleções especiais com múltiplos e-books por um preço especial. 
+              Economize até 50% comprando em kits temáticos.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {kits?.map((kit) => (
-              <Card key={kit.id} className="group hover:shadow-lg transition-all duration-300">
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge variant="outline" className="text-xs">
-                      {kit.is_premium ? 'Premium' : 'Padrão'}
-                    </Badge>
-                    {kit.is_premium && (
-                      <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">
-                        Premium
-                      </Badge>
-                    )}
-                  </div>
-                  <CardTitle className="text-lg font-medium text-gray-900 leading-snug">
-                    {kit.title}
-                  </CardTitle>
-                  <p className="text-sm text-gray-600">{kit.description}</p>
-                </CardHeader>
+          {/* Search */}
+          <div className="mb-8">
+            <div className="relative max-w-md mx-auto">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder="Buscar kits de e-books..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
 
-                <CardContent className="pt-0">
-                  <div className="mb-4">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <span className="text-2xl font-bold text-gray-900">
-                        R$ {kit.price.toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="text-xs text-gray-500 flex items-center">
-                      <BookOpen className="w-4 h-4 mr-1" />
-                      {kit.ebook_ids?.length || 0} e-books inclusos
-                    </div>
-                  </div>
+          {/* Featured Benefits */}
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <Card className="text-center">
+              <CardContent className="p-6">
+                <Package className="w-8 h-8 mx-auto text-blue-600 mb-3" />
+                <h3 className="font-semibold text-gray-900 mb-2">Múltiplos E-books</h3>
+                <p className="text-sm text-gray-600">
+                  Receba vários e-books relacionados por um preço especial
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center">
+              <CardContent className="p-6">
+                <Star className="w-8 h-8 mx-auto text-yellow-600 mb-3" />
+                <h3 className="font-semibold text-gray-900 mb-2">Economia Garantida</h3>
+                <p className="text-sm text-gray-600">
+                  Economize até 50% comparado à compra individual
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center">
+              <CardContent className="p-6">
+                <ShoppingCart className="w-8 h-8 mx-auto text-green-600 mb-3" />
+                <h3 className="font-semibold text-gray-900 mb-2">Acesso Imediato</h3>
+                <p className="text-sm text-gray-600">
+                  Download imediato após confirmação do pagamento
+                </p>
+              </CardContent>
+            </Card>
+          </div>
 
-                  <PaymentButton
-                    productType="kit"
-                    productId={kit.id}
-                    price={kit.price}
-                    className="w-full bg-gray-900 hover:bg-gray-800"
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    Comprar Kit
-                  </PaymentButton>
-                </CardContent>
-              </Card>
+          {/* Results Count */}
+          <div className="mb-6 text-center text-gray-600">
+            {filteredBundles.length} kit{filteredBundles.length !== 1 ? 's' : ''} disponível{filteredBundles.length !== 1 ? 'eis' : ''}
+          </div>
+
+          {/* Bundles Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredBundles.map((bundle) => (
+              <BundleCard
+                key={bundle.id}
+                bundle={bundle}
+                onPurchase={handlePurchase}
+              />
             ))}
           </div>
 
-          <section className="bg-gray-50 rounded-lg p-8">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-light text-gray-900 mb-4">
-                Próximas <span className="font-medium">Funcionalidades</span>
-              </h2>
-              <p className="text-lg text-gray-600">
-                Estamos sempre inovando para melhorar sua experiência
-              </p>
+          {filteredBundles.length === 0 && (
+            <div className="text-center py-12">
+              <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum kit encontrado</h3>
+              <p className="text-gray-600 mb-4">Tente ajustar sua busca ou explore nossa biblioteca completa</p>
+              <Button className="bg-gray-900 hover:bg-gray-800">
+                Ver Todos os E-books
+              </Button>
             </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {upcomingFeatures.map((feature, index) => (
-                <Card key={index} className="text-center">
-                  <CardContent className="pt-6">
-                    <div className="text-4xl mb-3">{feature.icon}</div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">{feature.title}</h3>
-                    <p className="text-sm text-gray-600 mb-3">{feature.description}</p>
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                      {feature.status}
-                    </Badge>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
+          )}
         </div>
       </section>
 
       <Footer />
+
+      {/* Payment Modal */}
+      <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <ShoppingCart className="w-5 h-5 mr-2" />
+              Adquirir Kit: {selectedBundle?.title}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedBundle && (
+            <div className="space-y-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-medium text-gray-900 mb-2">{selectedBundle.title}</h4>
+                <p className="text-sm text-gray-600 mb-3">{selectedBundle.description}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-2xl font-bold text-gray-900">
+                    R$ {selectedBundle.price.toString().replace('.', ',')}
+                  </span>
+                  <span className="text-sm text-gray-600">
+                    {selectedBundle.ebook_ids?.length || 0} e-books
+                  </span>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <Button className="w-full" size="lg">
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  Comprar Kit Agora
+                </Button>
+                
+                <p className="text-xs text-center text-gray-500">
+                  Pagamento seguro • Download imediato • Acesso vitalício
+                </p>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

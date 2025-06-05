@@ -17,7 +17,10 @@ import {
   Settings,
   BookOpen,
   Crown,
-  Headphones
+  Headphones,
+  Moon,
+  Sun,
+  Palette
 } from "lucide-react";
 
 const EbookReader = () => {
@@ -30,6 +33,7 @@ const EbookReader = () => {
   const [volume, setVolume] = useState(70);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [fontSize, setFontSize] = useState(16);
+  const [theme, setTheme] = useState<'light' | 'dark' | 'sepia'>('light');
   const [showSettings, setShowSettings] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -63,11 +67,22 @@ const EbookReader = () => {
       
       <p>Além disso, é importante considerar a durabilidade e a manutenção dos materiais escolhidos, pois isso impacta diretamente na sustentabilidade a longo prazo do projeto.</p>
     `,
-    audioUrl: "/audio/sample-audiobook.mp3", // This would be the actual audio file
+    audioUrl: "/audio/sample-audiobook.mp3",
     isPremium: true
   };
 
   const speedOptions = [0.5, 0.75, 1, 1.25, 1.5, 2];
+
+  const getThemeClasses = () => {
+    switch (theme) {
+      case 'dark':
+        return 'bg-gray-900 text-gray-100';
+      case 'sepia':
+        return 'bg-yellow-50 text-yellow-900';
+      default:
+        return 'bg-white text-gray-900';
+    }
+  };
 
   useEffect(() => {
     if (audioRef.current) {
@@ -129,7 +144,7 @@ const EbookReader = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen ${getThemeClasses()}`}>
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -141,6 +156,7 @@ const EbookReader = () => {
               <div className="flex items-center space-x-2">
                 <BookOpen className="w-5 h-5 text-gray-600" />
                 <span className="text-sm text-gray-600">Modo Leitura</span>
+                <Badge className="bg-yellow-100 text-yellow-700">Premium</Badge>
               </div>
             </div>
 
@@ -175,6 +191,33 @@ const EbookReader = () => {
                 />
                 <span className="text-sm text-gray-500">{fontSize}px</span>
               </div>
+              
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">Tema:</span>
+                <div className="flex space-x-1">
+                  <Button
+                    variant={theme === 'light' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTheme('light')}
+                  >
+                    <Sun className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={theme === 'dark' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTheme('dark')}
+                  >
+                    <Moon className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={theme === 'sepia' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTheme('sepia')}
+                  >
+                    <Palette className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -182,8 +225,8 @@ const EbookReader = () => {
 
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-6">
-          <h1 className="text-3xl font-light text-gray-900 mb-2">{ebook.title}</h1>
-          <p className="text-lg text-gray-600">por {ebook.author}</p>
+          <h1 className="text-3xl font-light mb-2">{ebook.title}</h1>
+          <p className="text-lg opacity-75">por {ebook.author}</p>
         </div>
 
         {/* Audiobook Controls */}
@@ -192,7 +235,7 @@ const EbookReader = () => {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
                 <Headphones className="w-5 h-5 text-gray-600" />
-                <span className="font-medium text-gray-900">Audiobook</span>
+                <span className="font-medium">Audiobook</span>
                 {userProgress?.isPremium ? (
                   <Badge className="bg-yellow-100 text-yellow-700">Premium</Badge>
                 ) : (
@@ -280,7 +323,7 @@ const EbookReader = () => {
             ) : (
               <div className="text-center py-8">
                 <Crown className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Audiobook Premium</h3>
+                <h3 className="text-lg font-medium mb-2">Audiobook Premium</h3>
                 <p className="text-gray-600 mb-4">
                   Acompanhe a leitura com narração profissional. Disponível apenas para membros premium.
                 </p>
