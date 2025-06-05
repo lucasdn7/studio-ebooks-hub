@@ -18,7 +18,7 @@ const EbookBundles = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBundle, setSelectedBundle] = useState<Kit | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const { kits, loading, error } = useKits();
+  const { data: kits = [], isLoading, error } = useKits();
 
   const filteredBundles = kits.filter(kit =>
     kit.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -35,7 +35,7 @@ const EbookBundles = () => {
     setSelectedBundle(null);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
@@ -56,7 +56,7 @@ const EbookBundles = () => {
         <Header />
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="text-center">
-            <p className="text-red-600 mb-4">Erro ao carregar kits: {error}</p>
+            <p className="text-red-600 mb-4">Erro ao carregar kits: {error.message}</p>
             <Button onClick={() => window.location.reload()}>Tentar novamente</Button>
           </div>
         </div>
