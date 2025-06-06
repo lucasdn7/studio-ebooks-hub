@@ -46,10 +46,10 @@ export const useCreator = () => {
       setIsCreator(hasCreatorRole);
 
       if (hasCreatorRole) {
-        // Get creator profile
+        // Get creator profile with badge info
         const { data: profile } = await supabase
           .from('content_creators')
-          .select('*')
+          .select('*, current_badge, total_ebooks_sold, current_commission_rate')
           .eq('user_id', user.id)
           .single();
 

@@ -50,9 +50,12 @@ export type Database = {
           bank_details: Json | null
           bio: string | null
           created_at: string | null
+          current_badge: Database["public"]["Enums"]["creator_badge"] | null
+          current_commission_rate: number | null
           id: string
           social_links: Json | null
           total_earnings: number | null
+          total_ebooks_sold: number | null
           total_sales: number | null
           updated_at: string | null
           user_id: string
@@ -61,9 +64,12 @@ export type Database = {
           bank_details?: Json | null
           bio?: string | null
           created_at?: string | null
+          current_badge?: Database["public"]["Enums"]["creator_badge"] | null
+          current_commission_rate?: number | null
           id?: string
           social_links?: Json | null
           total_earnings?: number | null
+          total_ebooks_sold?: number | null
           total_sales?: number | null
           updated_at?: string | null
           user_id: string
@@ -72,9 +78,12 @@ export type Database = {
           bank_details?: Json | null
           bio?: string | null
           created_at?: string | null
+          current_badge?: Database["public"]["Enums"]["creator_badge"] | null
+          current_commission_rate?: number | null
           id?: string
           social_links?: Json | null
           total_earnings?: number | null
+          total_ebooks_sold?: number | null
           total_sales?: number | null
           updated_at?: string | null
           user_id?: string
@@ -606,6 +615,25 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_commission_rate: {
+        Args: { badge: Database["public"]["Enums"]["creator_badge"] }
+        Returns: number
+      }
+      calculate_creator_badge: {
+        Args: { ebooks_sold: number }
+        Returns: Database["public"]["Enums"]["creator_badge"]
+      }
+      get_creator_badge_progress: {
+        Args: { user_uuid: string }
+        Returns: {
+          current_badge: Database["public"]["Enums"]["creator_badge"]
+          current_sales: number
+          current_commission_rate: number
+          next_badge: Database["public"]["Enums"]["creator_badge"]
+          next_badge_requirement: number
+          sales_to_next_level: number
+        }[]
+      }
       get_creator_data: {
         Args: { user_uuid: string }
         Returns: {
@@ -622,6 +650,15 @@ export type Database = {
     }
     Enums: {
       achievement_type: "badge" | "medal"
+      creator_badge:
+        | "bronze"
+        | "silver"
+        | "copper"
+        | "iron"
+        | "gold"
+        | "diamond"
+        | "crown"
+        | "rocket"
       user_role: "user" | "premium" | "creator" | "admin"
     }
     CompositeTypes: {
@@ -739,6 +776,16 @@ export const Constants = {
   public: {
     Enums: {
       achievement_type: ["badge", "medal"],
+      creator_badge: [
+        "bronze",
+        "silver",
+        "copper",
+        "iron",
+        "gold",
+        "diamond",
+        "crown",
+        "rocket",
+      ],
       user_role: ["user", "premium", "creator", "admin"],
     },
   },
