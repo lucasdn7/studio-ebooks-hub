@@ -22,10 +22,11 @@ import AuthPage from "./components/AuthPage";
 import NotFound from "./pages/NotFound";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancelled from "./pages/PaymentCancelled";
+import App from "./pages/App";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const AppRouter = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/member-area" element={<MemberArea />} />
             <Route path="/creator-dashboard" element={<CreatorDashboard />} />
+            <Route path="/app" element={<App />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/payment-cancelled" element={<PaymentCancelled />} />
             <Route path="*" element={<NotFound />} />
@@ -57,4 +59,4 @@ const App = () => (
   </QueryClientProvider>
 );
 
-export default App;
+export default AppRouter;

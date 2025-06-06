@@ -7,7 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Upload } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Upload, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
@@ -24,7 +25,7 @@ const CreateEbookModal = ({ open, onClose, onSuccess }: CreateEbookModalProps) =
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    category: '',
+    categories: [] as string[],
     price: '',
     isPremium: false,
     difficulty: 'Iniciante',
@@ -33,15 +34,71 @@ const CreateEbookModal = ({ open, onClose, onSuccess }: CreateEbookModalProps) =
   });
 
   const categories = [
-    'Tecnologia', 'Negócios', 'Educação', 'Saúde', 'Arte',
-    'Ciência', 'História', 'Literatura', 'Autoajuda', 'Ficção'
+    // Construção Civil
+    { id: 'arquitetura', name: 'Arquitetura', group: 'Construção Civil' },
+    { id: 'paisagismo', name: 'Paisagismo', group: 'Construção Civil' },
+    { id: 'urbanismo', name: 'Urbanismo', group: 'Construção Civil' },
+    { id: 'design-interiores', name: 'Design de Interiores', group: 'Construção Civil' },
+    { id: 'marcenaria', name: 'Marcenaria', group: 'Construção Civil' },
+    { id: 'engenharia-civil', name: 'Engenharia Civil', group: 'Construção Civil' },
+    { id: 'eletrica', name: 'Elétrica', group: 'Construção Civil' },
+    { id: 'hidrossanitario', name: 'Hidrossanitário', group: 'Construção Civil' },
+    { id: 'legislacao', name: 'Legislação', group: 'Construção Civil' },
+    
+    // Desenvolvimento Profissional
+    { id: 'tecnologia', name: 'Tecnologia', group: 'Desenvolvimento Profissional' },
+    { id: 'marketing', name: 'Marketing', group: 'Desenvolvimento Profissional' },
+    { id: 'financas', name: 'Finanças', group: 'Desenvolvimento Profissional' },
+    { id: 'desenvolvimento-pessoal', name: 'Desenvolvimento Pessoal', group: 'Desenvolvimento Profissional' },
+    { id: 'educacao', name: 'Educação', group: 'Desenvolvimento Profissional' },
+    { id: 'negocios', name: 'Negócios', group: 'Desenvolvimento Profissional' }
   ];
 
+  const categoryGroups = categories.reduce((groups, category) => {
+    const group = category.group;
+    if (!groups[group]) {
+      groups[group] = [];
+    }
+    groups[group].push(category);
+    return groups;
+  }, {} as Record<string, typeof categories>);
+
   const difficulties = ['Iniciante', 'Intermediário', 'Avançado'];
+
+  const handleCategoryChange = (categoryId: string, checked: boolean) => {
+    if (checked) {
+      if (formData.categories.length >= 3) {
+        toast({
+          title: "Limite atingido",
+          description: "Você só pode escolher até 3 categorias para este eBook.",
+          variant: "destructive"
+        });
+        return;
+      }
+      setFormData(prev => ({
+        ...prev,
+        categories: [...prev.categories, categoryId]
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        categories: prev.categories.filter(id => id !== categoryId)
+      }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+
+    if (formData.categories.length === 0) {
+      toast({
+        title: "Categorias obrigatórias",
+        description: "Selecione pelo menos uma categoria para o eBook.",
+        variant: "destructive"
+      });
+      return;
+    }
 
     try {
       setLoading(true);
@@ -57,13 +114,13 @@ const CreateEbookModal = ({ open, onClose, onSuccess }: CreateEbookModalProps) =
         throw new Error('Creator profile not found');
       }
 
-      // Create the ebook
+      // Create the ebook with primary category (first selected)
       const { data: ebook, error: ebookError } = await supabase
         .from('ebooks')
         .insert({
           title: formData.title,
           description: formData.description,
-          category: formData.category,
+          category: formData.categories[0], // Primary category
           price: formData.isPremium ? parseFloat(formData.price) : null,
           is_premium: formData.isPremium,
           difficulty: formData.difficulty,
@@ -95,7 +152,7 @@ const CreateEbookModal = ({ open, onClose, onSuccess }: CreateEbookModalProps) =
       setFormData({
         title: '',
         description: '',
-        category: '',
+        categories: [],
         price: '',
         isPremium: false,
         difficulty: 'Iniciante',
@@ -151,44 +208,75 @@ const CreateEbookModal = ({ open, onClose, onSuccess }: CreateEbookModalProps) =
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="category">Categoria *</Label>
-                <Select 
-                  value={formData.category} 
-                  onValueChange={(value) => setFormData({ ...formData, category: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione uma categoria" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            {/* Categories Selection */}
+            <div>
+              <Label>Categorias * (máximo 3)</Label>
+              <div className="mt-2 mb-4 flex items-center gap-2">
+                <span className="text-sm text-gray-600">
+                  {formData.categories.length}/3 categorias selecionadas
+                </span>
+                {formData.categories.length >= 3 && (
+                  <div className="flex items-center text-amber-600">
+                    <AlertCircle className="w-4 h-4 mr-1" />
+                    <span className="text-xs">Limite atingido</span>
+                  </div>
+                )}
               </div>
+              
+              <div className="space-y-4 max-h-64 overflow-y-auto border rounded-lg p-4">
+                {Object.entries(categoryGroups).map(([groupName, groupCategories]) => (
+                  <div key={groupName}>
+                    <h4 className="font-medium text-sm text-gray-700 mb-2">{groupName}</h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      {groupCategories.map((category) => (
+                        <div key={category.id} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={category.id}
+                            checked={formData.categories.includes(category.id)}
+                            onCheckedChange={(checked) => 
+                              handleCategoryChange(category.id, checked as boolean)
+                            }
+                            disabled={
+                              !formData.categories.includes(category.id) && 
+                              formData.categories.length >= 3
+                            }
+                          />
+                          <Label 
+                            htmlFor={category.id} 
+                            className={`text-sm ${
+                              !formData.categories.includes(category.id) && 
+                              formData.categories.length >= 3 
+                                ? 'text-gray-400' 
+                                : 'text-gray-700'
+                            }`}
+                          >
+                            {category.name}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-              <div>
-                <Label htmlFor="difficulty">Dificuldade</Label>
-                <Select 
-                  value={formData.difficulty} 
-                  onValueChange={(value) => setFormData({ ...formData, difficulty: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {difficulties.map((difficulty) => (
-                      <SelectItem key={difficulty} value={difficulty}>
-                        {difficulty}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div>
+              <Label htmlFor="difficulty">Dificuldade</Label>
+              <Select 
+                value={formData.difficulty} 
+                onValueChange={(value) => setFormData({ ...formData, difficulty: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {difficulties.map((difficulty) => (
+                    <SelectItem key={difficulty} value={difficulty}>
+                      {difficulty}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

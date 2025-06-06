@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Menu, X, User, LogOut, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -16,11 +15,13 @@ const Header = () => {
   const { user, signOut } = useAuth();
 
   const navigation = [
-    { name: "Início", href: "/" },
-    { name: "eBooks", href: "/ebooks" },
-    { name: "Bundles", href: "/bundles" },
-    { name: "Sobre", href: "/about" },
-    { name: "Contato", href: "/contact" },
+    { name: 'Início', href: '/' },
+    { name: 'eBooks', href: '/ebooks' },
+    { name: 'Categorias', href: '/categories' },
+    { name: 'Planos', href: '/plans' },
+    { name: 'Nosso App', href: '/app' },
+    { name: 'Sobre', href: '/about' },
+    { name: 'Contato', href: '/contact' },
   ];
 
   return (
