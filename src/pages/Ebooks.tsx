@@ -49,7 +49,7 @@ const Ebooks = () => {
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Descubra uma curadoria exclusiva de conteúdo premium para acelerar 
-              seu aprendizado e transformar sua carreira.
+              seu aprendizado e transformar sua carreira na construção civil.
             </p>
           </div>
 
@@ -69,6 +69,7 @@ const Ebooks = () => {
                 <EbookCategories
                   onCategorySelect={setSelectedCategory}
                   selectedCategory={selectedCategory}
+                  compact={true}
                 />
               </div>
             </div>

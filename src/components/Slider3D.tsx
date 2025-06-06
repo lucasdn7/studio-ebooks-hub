@@ -5,21 +5,58 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight, Star, Download } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useEbooks } from "@/hooks/useEbooks";
-import { getStorageUrl, formatDownloads, mapEbookType } from "@/utils/supabaseHelpers";
-import ContentBadge from "@/components/ContentBadge";
 
 const Slider3D = () => {
-  const { ebooks, loading, getFeaturedEbooks } = useEbooks();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [featuredBooks, setFeaturedBooks] = useState<any[]>([]);
 
-  useEffect(() => {
-    if (ebooks.length > 0) {
-      const featured = getFeaturedEbooks();
-      setFeaturedBooks(featured.slice(0, 5));
+  // Mock data para garantir que sempre funcione
+  const featuredBooks = [
+    {
+      id: 1,
+      title: "Manual Completo de Arquitetura Residencial",
+      author: "Ana Silva",
+      cover: "/placeholder.svg",
+      rating: 4.8,
+      downloads: 1250,
+      category: "Arquitetura"
+    },
+    {
+      id: 2,
+      title: "Design de Interiores: Tendências 2024",
+      author: "Carlos Santos",
+      cover: "/placeholder.svg",
+      rating: 4.6,
+      downloads: 890,
+      category: "Design de Interiores"
+    },
+    {
+      id: 3,
+      title: "Técnicas Avançadas de Marcenaria",
+      author: "Roberto Lima",
+      cover: "/placeholder.svg",
+      rating: 4.9,
+      downloads: 756,
+      category: "Marcenaria"
+    },
+    {
+      id: 4,
+      title: "Sustentabilidade na Construção Civil",
+      author: "Maria Costa",
+      cover: "/placeholder.svg",
+      rating: 4.7,
+      downloads: 623,
+      category: "Sustentabilidade"
+    },
+    {
+      id: 5,
+      title: "Gestão de Projetos em Arquitetura",
+      author: "João Oliveira",
+      cover: "/placeholder.svg",
+      rating: 4.5,
+      downloads: 534,
+      category: "Arquitetura"
     }
-  }, [ebooks, getFeaturedEbooks]);
+  ];
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % featuredBooks.length);
@@ -33,7 +70,6 @@ const Slider3D = () => {
     const diff = index - currentIndex;
     const totalSlides = featuredBooks.length;
     
-    // Normalize position to be between -2 and 2
     let position = diff;
     if (position > totalSlides / 2) position -= totalSlides;
     if (position < -totalSlides / 2) position += totalSlides;
@@ -60,18 +96,6 @@ const Slider3D = () => {
     }
   };
 
-  if (loading || featuredBooks.length === 0) {
-    return (
-      <section className="py-16 bg-gradient-to-br from-blue-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className="py-16 bg-gradient-to-br from-blue-50 to-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -88,11 +112,9 @@ const Slider3D = () => {
         </div>
 
         {/* 3D Slider Container */}
-        <div className="relative h-96 flex items-center justify-center" style={{ perspective: '1000px' }}>
+        <div className="relative h-96 flex items-center justify-center perspective-1000">
           {featuredBooks.map((book, index) => {
             const position = getSlidePosition(index);
-            const ebookType = mapEbookType(book.type, book.is_premium);
-            const coverUrl = getStorageUrl('ebook-covers', book.cover || '');
             
             return (
               <div
@@ -101,18 +123,20 @@ const Slider3D = () => {
                 style={{ 
                   left: '50%', 
                   top: '50%',
-                  transform: `translate(-50%, -50%) ${getSlideStyle(position).includes('translate-x') ? '' : 'translateX(-50%)'}`
+                  transform: `translate(-50%, -50%)`
                 }}
               >
                 <Card className="w-64 h-80 hover:shadow-2xl transition-all duration-300 cursor-pointer border-blue-200">
                   <div className="relative h-48 bg-gray-100 rounded-t-lg overflow-hidden">
                     <img 
-                      src={coverUrl} 
+                      src={book.cover} 
                       alt={book.title}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-3 right-3">
-                      <ContentBadge type={ebookType} />
+                      <Badge variant="secondary" className="text-xs bg-blue-600 text-white">
+                        Premium
+                      </Badge>
                     </div>
                   </div>
                   
@@ -127,11 +151,11 @@ const Slider3D = () => {
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center text-gray-500">
                         <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
-                        {book.rating || 0}
+                        {book.rating}
                       </div>
                       <div className="flex items-center text-gray-500">
                         <Download className="w-3 h-3 mr-1" />
-                        {formatDownloads(book.downloads)}
+                        {book.downloads}
                       </div>
                     </div>
                   </CardContent>
