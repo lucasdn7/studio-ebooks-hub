@@ -2,7 +2,8 @@
 import { useState } from "react";
 import Hero from "@/components/Hero";
 import EbookCategories from "@/components/EbookCategories";
-import EbookCarousel from "@/components/EbookCarousel";
+import Slider3D from "@/components/Slider3D";
+import PurchaseSteps from "@/components/PurchaseSteps";
 import PricingPlans from "@/components/PricingPlans";
 import PublisherSection from "@/components/PublisherSection";
 import Header from "@/components/Header";
@@ -19,7 +20,8 @@ const Index = () => {
         onCategorySelect={setSelectedCategory}
         selectedCategory={selectedCategory}
       />
-      <EbookCarousel />
+      <Slider3D />
+      <PurchaseSteps />
       <PricingPlans />
       <PublisherSection />
       <Footer />

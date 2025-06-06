@@ -12,80 +12,160 @@ const categoryGroups = [
   {
     title: "Construção Civil",
     categories: [
-      { id: "arquitetura", name: "Arquitetura", icon: Building },
-      { id: "paisagismo", name: "Paisagismo", icon: Palette },
-      { id: "urbanismo", name: "Urbanismo", icon: Home },
-      { id: "design-interiores", name: "Design de Interiores", icon: Lightbulb },
-      { id: "marcenaria", name: "Marcenaria", icon: Hammer },
-      { id: "engenharia-civil", name: "Engenharia Civil", icon: Building },
-      { id: "eletrica", name: "Elétrica", icon: Zap },
-      { id: "hidrossanitario", name: "Hidrossanitário", icon: Droplets },
-      { id: "legislacao", name: "Legislação", icon: Scale }
+      { 
+        id: "arquitetura", 
+        name: "Arquitetura", 
+        icon: Building,
+        description: "Projetos, técnicas e metodologias arquitetônicas"
+      },
+      { 
+        id: "paisagismo", 
+        name: "Paisagismo", 
+        icon: Palette,
+        description: "Design de jardins e espaços verdes urbanos"
+      },
+      { 
+        id: "urbanismo", 
+        name: "Urbanismo", 
+        icon: Home,
+        description: "Planejamento e desenvolvimento urbano sustentável"
+      },
+      { 
+        id: "design-interiores", 
+        name: "Design de Interiores", 
+        icon: Lightbulb,
+        description: "Ambientação e decoração de espaços internos"
+      },
+      { 
+        id: "marcenaria", 
+        name: "Marcenaria", 
+        icon: Hammer,
+        description: "Técnicas de carpintaria e trabalho em madeira"
+      },
+      { 
+        id: "engenharia-civil", 
+        name: "Engenharia Civil", 
+        icon: Building,
+        description: "Cálculos estruturais e gestão de obras"
+      },
+      { 
+        id: "eletrica", 
+        name: "Elétrica", 
+        icon: Zap,
+        description: "Instalações elétricas e automação predial"
+      },
+      { 
+        id: "hidrossanitario", 
+        name: "Hidrossanitário", 
+        icon: Droplets,
+        description: "Sistemas hidráulicos e sanitários"
+      },
+      { 
+        id: "legislacao", 
+        name: "Legislação", 
+        icon: Scale,
+        description: "Normas técnicas e regulamentações do setor"
+      }
     ]
   },
   {
     title: "Desenvolvimento Profissional",
     categories: [
-      { id: "tecnologia", name: "Tecnologia", icon: Laptop },
-      { id: "marketing", name: "Marketing", icon: TrendingUp },
-      { id: "financas", name: "Finanças", icon: DollarSign },
-      { id: "desenvolvimento-pessoal", name: "Desenvolvimento Pessoal", icon: Target },
-      { id: "educacao", name: "Educação", icon: GraduationCap },
-      { id: "negocios", name: "Negócios", icon: Briefcase }
+      { 
+        id: "tecnologia", 
+        name: "Tecnologia", 
+        icon: Laptop,
+        description: "Ferramentas digitais para construção civil"
+      },
+      { 
+        id: "marketing", 
+        name: "Marketing", 
+        icon: TrendingUp,
+        description: "Estratégias de divulgação e vendas"
+      },
+      { 
+        id: "financas", 
+        name: "Finanças", 
+        icon: DollarSign,
+        description: "Gestão financeira e orçamentos de obra"
+      },
+      { 
+        id: "desenvolvimento-pessoal", 
+        name: "Desenvolvimento Pessoal", 
+        icon: Target,
+        description: "Liderança e habilidades interpessoais"
+      },
+      { 
+        id: "educacao", 
+        name: "Educação", 
+        icon: GraduationCap,
+        description: "Metodologias de ensino na construção civil"
+      },
+      { 
+        id: "negocios", 
+        name: "Negócios", 
+        icon: Briefcase,
+        description: "Empreendedorismo e gestão empresarial"
+      }
     ]
   }
 ];
 
 const EbookCategories = ({ onCategorySelect, selectedCategory }: EbookCategoriesProps) => {
   return (
-    <div className="mb-12 px-4 sm:px-6 lg:px-8">
+    <div className="mb-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8">
-          <Badge variant="secondary" className="mb-4">
+        <div className="text-center mb-6">
+          <Badge variant="secondary" className="mb-3 bg-blue-100 text-blue-800">
             Categorias Especializadas
           </Badge>
-          <h3 className="text-2xl font-light text-gray-900 mb-4">
+          <h3 className="text-xl font-light text-blue-900 mb-2">
             Explore por <span className="font-medium">Área de Conhecimento</span>
           </h3>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Conteúdo organizado por especialização para acelerar seu aprendizado
-          </p>
         </div>
 
         {/* Botão "Todas as Categorias" */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-6">
           <Button
             variant={selectedCategory === null ? "default" : "outline"}
             onClick={() => onCategorySelect(null)}
-            className="text-sm px-6 py-2"
+            className={`text-sm px-4 py-2 ${selectedCategory === null ? 'bg-blue-600 hover:bg-blue-700' : 'border-blue-300 text-blue-600 hover:bg-blue-50'}`}
           >
             <BookOpen className="w-4 h-4 mr-2" />
             Todas as Categorias
           </Button>
         </div>
 
-        {/* Grupos de Categorias */}
-        <div className="space-y-10">
+        {/* Grupos de Categorias - Layout compacto */}
+        <div className="grid lg:grid-cols-2 gap-6">
           {categoryGroups.map((group) => (
-            <div key={group.title}>
-              <h4 className="text-lg font-medium text-gray-900 mb-4 text-center">
+            <div key={group.title} className="bg-white rounded-lg border border-blue-200 p-4">
+              <h4 className="text-md font-medium text-blue-900 mb-3 border-b border-blue-100 pb-2">
                 {group.title}
               </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="space-y-2">
                 {group.categories.map((category) => {
                   const Icon = category.icon;
                   return (
-                    <Button
+                    <button
                       key={category.id}
-                      variant={selectedCategory === category.id ? "default" : "outline"}
                       onClick={() => onCategorySelect(category.id)}
-                      className="h-auto p-4 flex flex-col items-center space-y-2 hover:shadow-lg transition-all duration-200"
+                      className={`w-full text-left p-2 rounded-md transition-all duration-200 hover:bg-blue-50 ${
+                        selectedCategory === category.id ? 'bg-blue-100 border-blue-300' : 'hover:shadow-sm'
+                      }`}
                     >
-                      <Icon className="w-6 h-6" />
-                      <span className="text-sm font-medium text-center">
-                        {category.name}
-                      </span>
-                    </Button>
+                      <div className="flex items-start space-x-3">
+                        <Icon className="w-4 h-4 text-blue-600 mt-1 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-blue-900">
+                            {category.name}
+                          </div>
+                          <div className="text-xs text-gray-600 mt-1">
+                            {category.description}
+                          </div>
+                        </div>
+                      </div>
+                    </button>
                   );
                 })}
               </div>
