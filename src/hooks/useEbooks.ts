@@ -5,22 +5,31 @@ import type { Tables } from '@/integrations/supabase/types';
 
 export type Ebook = Tables<'ebooks'>;
 
-export const useEbooks = () => {
+interface UseEbooksOptions {
+  category?: string | null;
+}
+
+export const useEbooks = (options: UseEbooksOptions = {}) => {
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchEbooks();
-  }, []);
+  }, [options.category]);
 
   const fetchEbooks = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      let query = supabase
         .from('ebooks')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('*');
+
+      if (options.category) {
+        query = query.eq('category', options.category);
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
 
