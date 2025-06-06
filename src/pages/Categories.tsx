@@ -1,10 +1,13 @@
 
+import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import EbookCategories from "@/components/EbookCategories";
 import { Badge } from "@/components/ui/badge";
 
 const Categories = () => {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -25,7 +28,10 @@ const Categories = () => {
         </div>
       </section>
 
-      <EbookCategories />
+      <EbookCategories 
+        onCategorySelect={setSelectedCategory}
+        selectedCategory={selectedCategory}
+      />
       
       <Footer />
     </div>

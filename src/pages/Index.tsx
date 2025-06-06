@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import Hero from "@/components/Hero";
 import EbookCategories from "@/components/EbookCategories";
 import EbookCarousel from "@/components/EbookCarousel";
@@ -8,11 +9,16 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 const Index = () => {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
   return (
     <div className="min-h-screen">
       <Header />
       <Hero />
-      <EbookCategories />
+      <EbookCategories 
+        onCategorySelect={setSelectedCategory}
+        selectedCategory={selectedCategory}
+      />
       <EbookCarousel />
       <PricingPlans />
       <PublisherSection />
