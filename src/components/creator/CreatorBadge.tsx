@@ -1,6 +1,5 @@
 
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 
 interface CreatorBadgeProps {
   badge: string;
@@ -9,14 +8,14 @@ interface CreatorBadgeProps {
 }
 
 const BADGE_CONFIG = {
-  bronze: { icon: "🏅", label: "Iniciante", color: "bg-orange-100 text-orange-800" },
-  silver: { icon: "🎖️", label: "Vendedor", color: "bg-gray-100 text-gray-800" },
-  copper: { icon: "🥉", label: "Bronze", color: "bg-amber-100 text-amber-800" },
-  iron: { icon: "🥈", label: "Prata", color: "bg-slate-100 text-slate-800" },
-  gold: { icon: "🥇", label: "Ouro", color: "bg-yellow-100 text-yellow-800" },
-  diamond: { icon: "💎", label: "Diamante", color: "bg-blue-100 text-blue-800" },
-  crown: { icon: "👑", label: "Coroa", color: "bg-purple-100 text-purple-800" },
-  rocket: { icon: "🚀", label: "Foguete", color: "bg-green-100 text-green-800" }
+  bronze: { icon: "🏅", label: "Iniciante", color: "bg-blue-100 text-blue-800" },
+  silver: { icon: "🎖️", label: "Vendedor", color: "bg-blue-200 text-blue-800" },
+  copper: { icon: "🥉", label: "Bronze", color: "bg-blue-300 text-blue-900" },
+  iron: { icon: "🥈", label: "Prata", color: "bg-blue-400 text-blue-900" },
+  gold: { icon: "🥇", label: "Ouro", color: "bg-blue-500 text-white" },
+  diamond: { icon: "💎", label: "Diamante", color: "bg-blue-600 text-white" },
+  crown: { icon: "👑", label: "Coroa", color: "bg-blue-700 text-white" },
+  rocket: { icon: "🚀", label: "Foguete", color: "bg-blue-800 text-white" }
 };
 
 const CreatorBadge = ({ badge, size = 'md', showLabel = true }: CreatorBadgeProps) => {

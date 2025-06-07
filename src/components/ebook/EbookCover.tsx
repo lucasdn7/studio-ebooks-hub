@@ -31,7 +31,7 @@ const EbookCover = ({ ebook, coverUrl, ebookType }: EbookCoverProps) => {
     <div className="space-y-6">
       {/* Cover Image */}
       <div className="relative">
-        <div className="aspect-[3/4] bg-gray-200 rounded-lg overflow-hidden shadow-lg">
+        <div className="aspect-[3/4] bg-blue-50 rounded-lg overflow-hidden shadow-lg">
           <img 
             src={coverUrl} 
             alt={ebook.title}
@@ -59,7 +59,7 @@ const EbookCover = ({ ebook, coverUrl, ebookType }: EbookCoverProps) => {
       />
 
       {!ebook.file_url && (
-        <div className="text-center text-sm text-gray-500 bg-yellow-50 p-3 rounded-lg">
+        <div className="text-center text-sm text-blue-600 bg-blue-50 p-3 rounded-lg border border-blue-200">
           ⚠️ Arquivo não disponível para download no momento
         </div>
       )}
@@ -68,8 +68,8 @@ const EbookCover = ({ ebook, coverUrl, ebookType }: EbookCoverProps) => {
       <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center">
-              <ShoppingCart className="w-5 h-5 mr-2" />
+            <DialogTitle className="flex items-center text-blue-900">
+              <ShoppingCart className="w-5 h-5 mr-2 text-blue-600" />
               Adquirir E-book
             </DialogTitle>
           </DialogHeader>

@@ -643,6 +643,14 @@ export type Database = {
           can_create_bundles: boolean
         }[]
       }
+      increment_ebook_downloads: {
+        Args: { ebook_id: number }
+        Returns: undefined
+      }
+      increment_user_ebooks_read: {
+        Args: { user_uuid: string }
+        Returns: undefined
+      }
       is_creator: {
         Args: { user_uuid: string }
         Returns: boolean

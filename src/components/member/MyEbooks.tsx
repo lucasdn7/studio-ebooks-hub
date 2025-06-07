@@ -60,17 +60,18 @@ const MyEbooks = () => {
   ];
 
   const getCategoryColor = (category: string) => {
+    // Usando apenas variações de azul seguindo o padrão da página categorias
     switch (category) {
       case "Arquitetura":
         return "bg-blue-100 text-blue-700 border-blue-200";
       case "Design de Interiores":
-        return "bg-green-100 text-green-700 border-green-200";
+        return "bg-blue-200 text-blue-800 border-blue-300";
       case "Marcenaria":
-        return "bg-amber-100 text-amber-700 border-amber-200";
+        return "bg-blue-300 text-blue-900 border-blue-400";
       case "Sustentabilidade":
-        return "bg-emerald-100 text-emerald-700 border-emerald-200";
+        return "bg-blue-400 text-blue-900 border-blue-500";
       default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
+        return "bg-blue-100 text-blue-700 border-blue-200";
     }
   };
 
@@ -85,10 +86,10 @@ const MyEbooks = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-light text-gray-900">
+        <h2 className="text-2xl font-light text-blue-900">
           Meus <span className="font-medium">eBooks</span>
         </h2>
-        <Badge variant="outline" className="text-gray-600">
+        <Badge variant="outline" className="text-blue-600 border-blue-200">
           {myEbooks.length} eBooks adquiridos
         </Badge>
       </div>
@@ -96,19 +97,19 @@ const MyEbooks = () => {
       {/* Search and Filters */}
       <div className="space-y-4">
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 w-4 h-4" />
           <Input
             placeholder="Buscar nos meus eBooks..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 border-blue-200 focus:border-blue-400"
           />
         </div>
 
         <div className="flex flex-wrap gap-2 items-center">
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-gray-500" />
-            <span className="text-sm font-medium text-gray-700">Filtros:</span>
+            <Filter className="w-4 h-4 text-blue-500" />
+            <span className="text-sm font-medium text-blue-700">Filtros:</span>
           </div>
           {filters.map((filter) => (
             <button
@@ -116,8 +117,8 @@ const MyEbooks = () => {
               onClick={() => setSelectedFilter(filter)}
               className={`px-3 py-1 rounded-full text-sm border transition-colors ${
                 selectedFilter === filter
-                  ? 'bg-gray-900 text-white border-gray-900'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-white text-blue-600 border-blue-200 hover:border-blue-300 hover:bg-blue-50'
               }`}
             >
               {filter}
@@ -127,23 +128,23 @@ const MyEbooks = () => {
       </div>
 
       {/* Results */}
-      <div className="text-sm text-gray-600 mb-4">
+      <div className="text-sm text-blue-600 mb-4">
         {filteredEbooks.length} eBook{filteredEbooks.length !== 1 ? 's' : ''} encontrado{filteredEbooks.length !== 1 ? 's' : ''}
       </div>
 
       {/* eBooks Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredEbooks.map((ebook) => (
-          <Card key={ebook.id} className="group hover:shadow-lg transition-all">
+          <Card key={ebook.id} className="group hover:shadow-lg transition-all border-blue-200 hover:border-blue-400">
             <div className="relative">
-              <div className="aspect-[3/4] bg-gray-200 rounded-t-lg overflow-hidden">
+              <div className="aspect-[3/4] bg-blue-50 rounded-t-lg overflow-hidden">
                 <img 
                   src={ebook.cover} 
                   alt={ebook.title}
                   className="w-full h-full object-cover"
                 />
-                <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-sm hover:bg-gray-50 transition-colors">
-                  <Heart className={`w-4 h-4 ${ebook.isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
+                <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-sm hover:bg-blue-50 transition-colors">
+                  <Heart className={`w-4 h-4 ${ebook.isFavorite ? 'fill-blue-500 text-blue-500' : 'text-blue-400'}`} />
                 </button>
               </div>
             </div>
@@ -157,26 +158,26 @@ const MyEbooks = () => {
                   {ebook.category}
                 </Badge>
                 {ebook.downloadCount > 1 && (
-                  <div className="flex items-center text-xs text-gray-500">
+                  <div className="flex items-center text-xs text-blue-500">
                     <Download className="w-3 h-3 mr-1" />
                     {ebook.downloadCount}x
                   </div>
                 )}
               </div>
-              <CardTitle className="text-lg font-medium text-gray-900 leading-snug line-clamp-2">
+              <CardTitle className="text-lg font-medium text-blue-900 leading-snug line-clamp-2">
                 {ebook.title}
               </CardTitle>
             </CardHeader>
 
             <CardContent className="pt-0">
-              <div className="flex items-center justify-between mb-4 text-xs text-gray-500">
+              <div className="flex items-center justify-between mb-4 text-xs text-blue-500">
                 <div className="flex items-center">
                   <Calendar className="w-4 h-4 mr-1" />
                   Adquirido em {ebook.downloadDate}
                 </div>
               </div>
 
-              <Button className="w-full" variant="outline">
+              <Button className="w-full bg-blue-600 hover:bg-blue-700" variant="outline">
                 <Download className="w-4 h-4 mr-2" />
                 Baixar novamente
               </Button>
@@ -187,10 +188,10 @@ const MyEbooks = () => {
 
       {filteredEbooks.length === 0 && (
         <div className="text-center py-12">
-          <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum eBook encontrado</h3>
-          <p className="text-gray-600 mb-4">Tente ajustar seus filtros ou explore nossa biblioteca</p>
-          <Button className="bg-gray-900 hover:bg-gray-800">
+          <BookOpen className="w-12 h-12 text-blue-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-blue-900 mb-2">Nenhum eBook encontrado</h3>
+          <p className="text-blue-600 mb-4">Tente ajustar seus filtros ou explore nossa biblioteca</p>
+          <Button className="bg-blue-600 hover:bg-blue-700">
             Explorar biblioteca
           </Button>
         </div>
