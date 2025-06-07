@@ -4,6 +4,7 @@ import { usePayments } from '@/hooks/usePayments';
 import { CreditCard, Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import { sanitizeString, sanitizePrice } from '@/utils/inputSanitizer';
 
 interface PaymentButtonProps {
   productType: 'ebook' | 'kit' | 'subscription';
@@ -32,14 +33,41 @@ const PaymentButton = ({
       return;
     }
 
-    if (productType === 'subscription') {
-      await createCheckout('subscription', 'premium', 'subscription');
-    } else {
-      if (!productId) {
-        console.error('Product ID is required for non-subscription payments');
-        return;
+    // Input validation and sanitization
+    if (productType !== 'subscription' && (!productId || typeof productId !== 'string')) {
+      console.error('Product ID is required for non-subscription payments');
+      return;
+    }
+
+    // Sanitize inputs
+    const sanitizedProductType = sanitizeString(productType);
+    const sanitizedProductId = productId ? sanitizeString(productId) : undefined;
+    const sanitizedPrice = price ? sanitizePrice(price) : undefined;
+
+    // Validate product type
+    if (!['ebook', 'kit', 'subscription'].includes(sanitizedProductType)) {
+      console.error('Invalid product type');
+      return;
+    }
+
+    // Validate price if provided
+    if (sanitizedPrice !== undefined && (sanitizedPrice === null || sanitizedPrice < 0)) {
+      console.error('Invalid price');
+      return;
+    }
+
+    try {
+      if (productType === 'subscription') {
+        await createCheckout('subscription', 'premium', 'subscription');
+      } else {
+        if (!sanitizedProductId) {
+          console.error('Product ID is required for non-subscription payments');
+          return;
+        }
+        await createCheckout(sanitizedProductType, sanitizedProductId, 'payment');
       }
-      await createCheckout(productType, productId, 'payment');
+    } catch (error) {
+      console.error('Payment error:', error);
     }
   };
 

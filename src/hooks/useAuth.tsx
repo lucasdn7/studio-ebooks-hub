@@ -28,25 +28,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         setLoading(false);
 
-        // Check if user has premium access (casludn@gmail.com)
-        if (session?.user?.email === 'casludn@gmail.com' && event === 'SIGNED_IN') {
+        // Update user stats for premium access (secure check)
+        if (session?.user && event === 'SIGNED_IN') {
           setTimeout(async () => {
             try {
-              const { error } = await supabase
+              // Check if user has admin role instead of hardcoded email
+              const { data: userStats } = await supabase
                 .from('user_stats')
-                .upsert({
-                  user_id: session.user.id,
-                  is_premium: true,
-                  updated_at: new Date().toISOString()
-                }, { onConflict: 'user_id' });
+                .select('role, is_premium')
+                .eq('user_id', session.user.id)
+                .single();
               
-              if (error) {
-                console.error('Erro ao atualizar status premium:', error);
-              } else {
-                toast({
-                  title: "Acesso Premium Ativado!",
-                  description: "Bem-vindo ao Clube do eBook Premium!"
-                });
+              // Only update premium status if user has admin role
+              if (userStats?.role === 'admin' && !userStats?.is_premium) {
+                const { error } = await supabase
+                  .from('user_stats')
+                  .update({
+                    is_premium: true,
+                    updated_at: new Date().toISOString()
+                  })
+                  .eq('user_id', session.user.id);
+                
+                if (error) {
+                  console.error('Erro ao atualizar status premium:', error);
+                } else {
+                  toast({
+                    title: "Acesso Premium Ativado!",
+                    description: "Bem-vindo ao Clube do eBook Premium!"
+                  });
+                }
               }
             } catch (error) {
               console.error('Erro ao verificar status premium:', error);
@@ -67,16 +77,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signUp = async (email: string, password: string, firstName?: string, lastName?: string) => {
+    // Input validation and sanitization
+    if (!email || !email.includes('@') || email.length > 254) {
+      const error = new Error('Email inválido');
+      toast({
+        title: "Erro no cadastro",
+        description: "Email inválido. Verifique o formato do email.",
+        variant: "destructive"
+      });
+      return { error };
+    }
+
+    if (!password || password.length < 6) {
+      const error = new Error('Password too short');
+      toast({
+        title: "Erro no cadastro",
+        description: "A senha deve ter pelo menos 6 caracteres.",
+        variant: "destructive"
+      });
+      return { error };
+    }
+
     const redirectUrl = `${window.location.origin}/member-area`;
     
     const { error } = await supabase.auth.signUp({
-      email,
+      email: email.toLowerCase().trim(),
       password,
       options: {
         emailRedirectTo: redirectUrl,
         data: {
-          first_name: firstName,
-          last_name: lastName
+          first_name: firstName?.trim(),
+          last_name: lastName?.trim()
         }
       }
     });
@@ -111,8 +142,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signIn = async (email: string, password: string) => {
+    // Input validation
+    if (!email || !email.includes('@')) {
+      const error = new Error('Invalid email');
+      toast({
+        title: "Erro no login",
+        description: "Email inválido.",
+        variant: "destructive"
+      });
+      return { error };
+    }
+
     const { error } = await supabase.auth.signInWithPassword({
-      email,
+      email: email.toLowerCase().trim(),
       password
     });
 

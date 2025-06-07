@@ -8,9 +8,17 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const logStep = (step: string, details?: any) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CREATE-CHECKOUT] ${step}${detailsStr}`);
+// Input sanitization helper
+const sanitizeString = (input: string): string => {
+  if (typeof input !== 'string') return '';
+  return input.trim().replace(/[<>]/g, '').substring(0, 100);
+};
+
+const sanitizePrice = (price: number): number | null => {
+  if (typeof price !== 'number' || isNaN(price) || price < 0 || price > 10000) {
+    return null;
+  }
+  return Math.round(price * 100) / 100;
 };
 
 serve(async (req) => {
@@ -25,138 +33,143 @@ serve(async (req) => {
   );
 
   try {
-    logStep("Function started");
+    // Get authenticated user
+    const authHeader = req.headers.get('Authorization')!;
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
+
+    if (authError || !user) {
+      throw new Error('Unauthorized');
+    }
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
 
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
-    const user = userData.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
-
-    logStep("User authenticated", { userId: user.id, email: user.email });
-
     const { product_type, product_id, payment_type } = await req.json();
-    logStep("Request data", { product_type, product_id, payment_type });
+
+    // Input validation and sanitization
+    const sanitizedProductType = sanitizeString(product_type);
+    const sanitizedProductId = product_id ? sanitizeString(product_id) : null;
+    const sanitizedPaymentType = sanitizeString(payment_type);
+
+    // Validate inputs
+    if (!['ebook', 'kit', 'subscription'].includes(sanitizedProductType)) {
+      throw new Error('Invalid product type');
+    }
+
+    if (!['payment', 'subscription'].includes(sanitizedPaymentType)) {
+      throw new Error('Invalid payment type');
+    }
+
+    if (sanitizedProductType !== 'subscription' && !sanitizedProductId) {
+      throw new Error('Product ID is required for non-subscription payments');
+    }
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
 
-    // Check if customer exists
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId;
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-    }
+    let lineItems;
+    let mode: 'payment' | 'subscription' = 'payment';
 
-    let sessionConfig: any = {
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
-      client_reference_id: user.id,
-      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/payment-cancelled`,
-    };
-
-    if (payment_type === "subscription") {
-      // Subscription payment
-      sessionConfig.mode = "subscription";
-      sessionConfig.line_items = [
-        {
-          price_data: {
-            currency: "brl",
-            product_data: { name: "Plano Premium" },
-            unit_amount: 2990, // R$ 29,90
-            recurring: { interval: "month" },
-          },
-          quantity: 1,
+    if (sanitizedProductType === 'subscription') {
+      mode = 'subscription';
+      lineItems = [{
+        price_data: {
+          currency: 'brl',
+          recurring: { interval: 'month' },
+          product_data: { name: 'Clube do eBook Premium' },
+          unit_amount: 2997, // R$ 29.97
         },
-      ];
+        quantity: 1,
+      }];
     } else {
-      // One-time payment
-      sessionConfig.mode = "payment";
-      
-      let price = 0;
-      let productName = "";
+      // Fetch product details securely
+      let productData;
+      let productPrice;
 
-      if (product_type === "kit") {
-        const { data: kit } = await supabaseClient
-          .from("kits")
-          .select("*")
-          .eq("id", product_id)
+      if (sanitizedProductType === 'ebook') {
+        const { data: ebook, error } = await supabaseClient
+          .from('ebooks')
+          .select('id, title, price')
+          .eq('id', parseInt(sanitizedProductId!))
           .single();
+
+        if (error || !ebook) throw new Error('Ebook not found');
         
-        if (!kit) throw new Error("Kit not found");
-        price = Math.round(kit.price * 100); // Convert to cents
-        productName = kit.title;
-      } else if (product_type === "ebook") {
-        const { data: ebook } = await supabaseClient
-          .from("ebooks")
-          .select("*")
-          .eq("id", product_id)
+        productData = ebook;
+        productPrice = sanitizePrice(parseFloat(ebook.price?.toString() || '0'));
+        
+        if (productPrice === null || productPrice <= 0) {
+          throw new Error('Invalid product price');
+        }
+      } else if (sanitizedProductType === 'kit') {
+        const { data: kit, error } = await supabaseClient
+          .from('kits')
+          .select('id, title, price')
+          .eq('id', sanitizedProductId)
           .single();
+
+        if (error || !kit) throw new Error('Kit not found');
         
-        if (!ebook) throw new Error("Ebook not found");
-        price = Math.round((ebook.price || 0) * 100); // Convert to cents
-        productName = ebook.title;
+        productData = kit;
+        productPrice = sanitizePrice(parseFloat(kit.price?.toString() || '0'));
+        
+        if (productPrice === null || productPrice <= 0) {
+          throw new Error('Invalid product price');
+        }
+      } else {
+        throw new Error('Invalid product type');
       }
 
-      sessionConfig.line_items = [
-        {
-          price_data: {
-            currency: "brl",
-            product_data: { name: productName },
-            unit_amount: price,
-          },
-          quantity: 1,
+      lineItems = [{
+        price_data: {
+          currency: 'brl',
+          product_data: { name: productData.title },
+          unit_amount: Math.round(productPrice * 100), // Convert to cents
         },
-      ];
+        quantity: 1,
+      }];
 
-      // Create order record
-      const { data: order, error: orderError } = await supabaseClient.from("orders").insert({
-        user_id: user.id,
-        product_type,
-        product_id,
-        amount: price,
-        status: "pending",
-        currency: "brl",
-      }).select().single();
+      // Create order record with validated data
+      const { error: orderError } = await supabaseClient
+        .from('orders')
+        .insert({
+          user_id: user.id,
+          product_type: sanitizedProductType,
+          product_id: sanitizedProductId,
+          amount: Math.round(productPrice * 100),
+          status: 'pending',
+          currency: 'brl'
+        });
 
       if (orderError) {
-        logStep("Error creating order", orderError);
-        throw new Error(`Failed to create order: ${orderError.message}`);
+        console.error('Order creation error:', orderError);
+        throw new Error('Failed to create order');
       }
-      
-      logStep("Order created", { orderId: order.id });
     }
 
-    const session = await stripe.checkout.sessions.create(sessionConfig);
-    
-    // Update order with session ID for one-time payments
-    if (payment_type !== "subscription") {
-      await supabaseClient
-        .from("orders")
-        .update({ stripe_session_id: session.id })
-        .eq("user_id", user.id)
-        .eq("product_id", product_id)
-        .eq("status", "pending");
-    }
-
-    logStep("Checkout session created", { sessionId: session.id });
+    const session = await stripe.checkout.sessions.create({
+      client_reference_id: user.id,
+      line_items: lineItems,
+      mode,
+      success_url: `${req.headers.get('origin')}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get('origin')}/payment-cancelled`,
+      customer_email: user.email,
+      payment_method_types: ['card'],
+      billing_address_collection: 'required',
+      locale: 'pt-BR',
+    });
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    console.error('Checkout error:', error);
+    return new Response(JSON.stringify({ 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
+      status: 400,
     });
   }
 });

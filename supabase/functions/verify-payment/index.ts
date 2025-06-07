@@ -8,6 +8,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Input sanitization helper
+const sanitizeString = (input: string): string => {
+  if (typeof input !== 'string') return '';
+  return input.trim().replace(/[<>]/g, '').substring(0, 100);
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -24,19 +30,30 @@ serve(async (req) => {
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
 
     const { session_id } = await req.json();
-    if (!session_id) throw new Error("Session ID is required");
+    const sanitizedSessionId = sanitizeString(session_id);
+    
+    if (!sanitizedSessionId) throw new Error("Session ID is required");
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
-    const session = await stripe.checkout.sessions.retrieve(session_id);
+    const session = await stripe.checkout.sessions.retrieve(sanitizedSessionId);
+
+    if (!session.client_reference_id) {
+      throw new Error("No user reference found in session");
+    }
 
     if (session.payment_status === "paid") {
       if (session.mode === "subscription") {
         // Handle subscription
         const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
         
+        // Validate subscription data before inserting
+        if (!subscription.id || !subscription.customer) {
+          throw new Error("Invalid subscription data");
+        }
+        
         await supabaseClient.from("subscriptions").upsert({
           user_id: session.client_reference_id,
-          stripe_customer_id: session.customer as string,
+          stripe_customer_id: subscription.customer as string,
           stripe_subscription_id: subscription.id,
           plan_type: "premium",
           status: subscription.status,
@@ -49,16 +66,42 @@ serve(async (req) => {
           .from("user_stats")
           .update({ is_premium: true })
           .eq("user_id", session.client_reference_id);
+
+        // Log the action for audit purposes
+        await supabaseClient
+          .from("audit_logs")
+          .insert({
+            user_id: session.client_reference_id,
+            action: "subscription_created",
+            table_name: "subscriptions",
+            record_id: subscription.id,
+            new_values: { plan_type: "premium", status: subscription.status }
+          });
       } else {
         // Handle one-time payment
-        await supabaseClient
+        const { error: updateError } = await supabaseClient
           .from("orders")
           .update({ 
             status: "paid",
-            stripe_session_id: session_id,
+            stripe_session_id: sanitizedSessionId,
             updated_at: new Date().toISOString()
           })
-          .eq("stripe_session_id", session_id);
+          .eq("stripe_session_id", sanitizedSessionId);
+
+        if (updateError) {
+          console.error("Order update error:", updateError);
+        }
+
+        // Log the payment for audit purposes
+        await supabaseClient
+          .from("audit_logs")
+          .insert({
+            user_id: session.client_reference_id,
+            action: "payment_completed",
+            table_name: "orders",
+            record_id: sanitizedSessionId,
+            new_values: { status: "paid", amount: session.amount_total }
+          });
       }
     }
 
@@ -70,7 +113,10 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error("Payment verification error:", error);
+    return new Response(JSON.stringify({ 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
