@@ -29,7 +29,7 @@ const Hero = () => {
           </h1>
 
           {/* Subtitle */}
-          <p className="max-w-3xl mx-auto text-xl md:text-2xl text-gray-700 leading-relaxed">
+          <p className="max-w-3xl mx-auto text-xl md:text-2xl text-blue-700 leading-relaxed">
             Descubra uma biblioteca exclusiva de conteúdo premium para 
             <strong className="text-blue-800"> acelerar seu aprendizado</strong> e 
             transformar sua carreira na construção civil.
@@ -67,7 +67,7 @@ const Hero = () => {
               <Smartphone className="w-8 h-8 text-blue-600 mr-3" />
               <span className="text-xl font-semibold text-blue-900">📱 Novidade em Desenvolvimento!</span>
             </div>
-            <p className="text-gray-700 mb-4">
+            <p className="text-blue-700 mb-4">
               Estamos criando um app móvel revolucionário com gamificação, 
               sistema de moedas e conquistas incríveis!
             </p>
@@ -92,15 +92,15 @@ const Hero = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 pt-16 border-t border-blue-200">
             <div className="text-center">
               <div className="text-4xl font-bold text-blue-900 mb-2">500+</div>
-              <div className="text-gray-600">eBooks Premium</div>
+              <div className="text-blue-600">eBooks Premium</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-blue-900 mb-2">10k+</div>
-              <div className="text-gray-600">Leitores Ativos</div>
+              <div className="text-blue-600">Leitores Ativos</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-blue-900 mb-2">98%</div>
-              <div className="text-gray-600">Satisfação</div>
+              <div className="text-blue-600">Satisfação</div>
             </div>
           </div>
         </div>
