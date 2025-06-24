@@ -1,29 +1,31 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, DollarSign, Download, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { Tables } from "@/integrations/supabase/types";
+
+type SaleAnalytics = Tables<'sales_analytics'>;
+type SalesStats = {
+  totalSales: number;
+  grossRevenue: number;
+  netRevenue: number;
+  downloads: number;
+};
 
 const CreatorSales = () => {
   const { user } = useAuth();
-  const [salesData, setSalesData] = useState<any[]>([]);
+  const [salesData, setSalesData] = useState<SaleAnalytics[]>([]);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<SalesStats>({
     totalSales: 0,
     grossRevenue: 0,
     netRevenue: 0,
     downloads: 0
   });
 
-  useEffect(() => {
-    if (user) {
-      fetchSalesData();
-    }
-  }, [user]);
-
-  const fetchSalesData = async () => {
+  const fetchSalesData = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -50,8 +52,8 @@ const CreatorSales = () => {
         
         // Calculate stats
         const totalSales = sales.length;
-        const grossRevenue = sales.reduce((sum, sale) => sum + Number(sale.gross_amount), 0);
-        const netRevenue = sales.reduce((sum, sale) => sum + Number(sale.net_amount), 0);
+        const grossRevenue = sales.reduce((sum, sale) => sum + sale.gross_amount, 0);
+        const netRevenue = sales.reduce((sum, sale) => sum + sale.net_amount, 0);
         
         setStats({
           totalSales,
@@ -65,7 +67,13 @@ const CreatorSales = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchSalesData();
+    }
+  }, [user, fetchSalesData]);
 
   if (loading) {
     return (

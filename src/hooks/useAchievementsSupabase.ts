@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Achievement, UserProgress, UserTier } from '@/types/achievements';
@@ -11,21 +10,12 @@ export const useAchievementsSupabase = () => {
   const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (user) {
-      fetchUserProgress();
-    } else {
-      setUserProgress(null);
-      setLoading(false);
-    }
-  }, [user]);
-
-  const fetchUserProgress = async () => {
+  const fetchUserProgress = useCallback(async () => {
     if (!user) return;
 
     try {
       // Buscar estatísticas do usuário
-      const { data: userStats, error: statsError } = await supabase
+      const { data: userStats, error: statsError } = await (supabase as any)
         .from('user_stats')
         .select('*')
         .eq('user_id', user.id)
@@ -36,14 +26,14 @@ export const useAchievementsSupabase = () => {
       }
 
       // Buscar conquistas disponíveis
-      const { data: achievements, error: achievementsError } = await supabase
+      const { data: achievements, error: achievementsError } = await (supabase as any)
         .from('achievements')
         .select('*');
 
       if (achievementsError) throw achievementsError;
 
       // Buscar conquistas do usuário
-      const { data: userAchievements, error: userAchievementsError } = await supabase
+      const { data: userAchievements, error: userAchievementsError } = await (supabase as any)
         .from('user_achievements')
         .select('*')
         .eq('user_id', user.id);
@@ -70,22 +60,22 @@ export const useAchievementsSupabase = () => {
       const completedAchievements: Achievement[] = [];
       const pendingAchievements: Achievement[] = [];
 
-      achievements?.forEach(achievement => {
-        const userAchievement = userAchievements?.find(ua => ua.achievement_id === achievement.id);
+      achievements?.forEach((achievement: Record<string, unknown>) => {
+        const userAchievement = userAchievements?.find((ua: Record<string, unknown>) => ua.achievement_id === achievement.id);
         
         const mappedAchievement: Achievement = {
-          id: achievement.id,
-          title: achievement.title,
-          description: achievement.description,
-          icon: achievement.icon || '🏆',
-          category: achievement.type === 'badge' ? 'content' : 'special',
-          requirement: achievement.requirement || 1,
-          currentProgress: userAchievement?.current_progress || 0,
-          completed: userAchievement?.completed || false,
-          completedAt: userAchievement?.completed_at ? new Date(userAchievement.completed_at) : undefined,
-          points: achievement.points,
+          id: achievement.id as string,
+          title: achievement.title as string,
+          description: achievement.description as string,
+          icon: (achievement.icon as string) || '🏆',
+          category: achievement.type === 'badge' ? 'reading' : 'social',
+          requirement: (achievement.requirement as number) || 1,
+          currentProgress: (userAchievement?.current_progress as number) || 0,
+          completed: (userAchievement?.completed as boolean) || false,
+          completedAt: userAchievement?.completed_at ? new Date(userAchievement.completed_at as string) : undefined,
+          points: achievement.points as number,
           reward: achievement.type === 'badge' ? 'Badge de conquista' : 'Medalha especial',
-          premiumOnly: achievement.premium_only || false
+          premiumOnly: (achievement.premium_only as boolean) || false
         };
 
         if (mappedAchievement.completed) {
@@ -119,7 +109,16 @@ export const useAchievementsSupabase = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserProgress();
+    } else {
+      setUserProgress(null);
+      setLoading(false);
+    }
+  }, [user, fetchUserProgress]);
 
   const getCurrentTier = (points: number): UserTier => {
     return userTiers.find(tier => points >= tier.minPoints && points <= tier.maxPoints) || userTiers[0];

@@ -1,17 +1,44 @@
-
 export interface Achievement {
   id: string;
   title: string;
   description: string;
   icon: string;
-  category: 'content' | 'social' | 'time' | 'special' | 'certificate';
-  requirement: number;
-  currentProgress: number;
-  completed: boolean;
-  completedAt?: Date;
+  category: 'reading' | 'purchase' | 'social' | 'creator';
   points: number;
-  reward?: string;
-  premiumOnly?: boolean;
+  requirement: number;
+  created_at: string;
+}
+
+export interface UserAchievement {
+  id: string;
+  user_id: string;
+  achievement_id: string;
+  progress: number;
+  completed: boolean;
+  completed_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BadgeProgress {
+  id: string;
+  user_id: string;
+  badge_id: string;
+  progress: number;
+  max_progress: number;
+  completed: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UserProgress {
+  user_id: string;
+  total_points: number;
+  level: number;
+  achievements_count: number;
+  badges_count: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Certificate {
@@ -36,23 +63,4 @@ export interface UserTier {
   discount: number;
   color: string;
   icon: string;
-}
-
-export interface UserProgress {
-  totalPoints: number;
-  currentTier: UserTier;
-  nextTier?: UserTier;
-  completedAchievements: Achievement[];
-  pendingAchievements: Achievement[];
-  certificates: Certificate[];
-  isPremium: boolean;
-  stats: {
-    ebooksRead: number;
-    commentsPosted: number;
-    daysActive: number;
-    streakDays: number;
-    loginCount: number;
-    bundlesPurchased: number;
-    certificatesEarned: number;
-  };
 }

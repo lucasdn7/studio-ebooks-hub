@@ -1,8 +1,9 @@
-
 import { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { validateEmail, validatePassword, sanitizeHtml } from '@/utils/security';
+import { RateLimiter } from '@/utils/security';
 
 interface AuthContextType {
   user: User | null;
@@ -14,6 +15,9 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Rate limiter for auth attempts
+const authRateLimiter = new RateLimiter();
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -33,7 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setTimeout(async () => {
             try {
               // Check if user has admin role instead of hardcoded email
-              const { data: userStats } = await supabase
+              const { data: userStats } = await (supabase as any)
                 .from('user_stats')
                 .select('role, is_premium')
                 .eq('user_id', session.user.id)
@@ -41,7 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               
               // Only update premium status if user has admin role
               if (userStats?.role === 'admin' && !userStats?.is_premium) {
-                const { error } = await supabase
+                const { error } = await (supabase as any)
                   .from('user_stats')
                   .update({
                     is_premium: true,
@@ -77,8 +81,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signUp = async (email: string, password: string, firstName?: string, lastName?: string) => {
+    // Rate limiting check
+    const clientId = user?.id || 'anonymous';
+    if (!authRateLimiter.isAllowed(`signup_${clientId}`, 3, 300000)) { // 3 attempts per 5 minutes
+      const error = new Error('Muitas tentativas de cadastro. Aguarde 5 minutos.');
+      toast({
+        title: "Limite excedido",
+        description: "Muitas tentativas de cadastro. Aguarde 5 minutos e tente novamente.",
+        variant: "destructive"
+      });
+      return { error };
+    }
+
     // Input validation and sanitization
-    if (!email || !email.includes('@') || email.length > 254) {
+    if (!validateEmail(email)) {
       const error = new Error('Email inválido');
       toast({
         title: "Erro no cadastro",
@@ -88,26 +104,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return { error };
     }
 
-    if (!password || password.length < 6) {
-      const error = new Error('Password too short');
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      const error = new Error('Senha inválida');
       toast({
         title: "Erro no cadastro",
-        description: "A senha deve ter pelo menos 6 caracteres.",
+        description: passwordValidation.errors.join('. '),
         variant: "destructive"
       });
       return { error };
     }
 
+    // Sanitize inputs
+    const sanitizedEmail = email.toLowerCase().trim();
+    const sanitizedFirstName = firstName ? sanitizeHtml(firstName.trim()) : undefined;
+    const sanitizedLastName = lastName ? sanitizeHtml(lastName.trim()) : undefined;
+
     const redirectUrl = `${window.location.origin}/member-area`;
     
     const { error } = await supabase.auth.signUp({
-      email: email.toLowerCase().trim(),
+      email: sanitizedEmail,
       password,
       options: {
         emailRedirectTo: redirectUrl,
         data: {
-          first_name: firstName?.trim(),
-          last_name: lastName?.trim()
+          first_name: sanitizedFirstName,
+          last_name: sanitizedLastName
         }
       }
     });
@@ -123,7 +145,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } else if (error.message.includes('Invalid email')) {
         errorMessage = "Email inválido. Verifique o formato do email.";
       } else if (error.message.includes('Password')) {
-        errorMessage = "A senha deve ter pelo menos 6 caracteres.";
+        errorMessage = "A senha deve ter pelo menos 8 caracteres com letras maiúsculas, minúsculas e números.";
       }
 
       toast({
@@ -142,8 +164,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signIn = async (email: string, password: string) => {
+    // Rate limiting check
+    const clientId = user?.id || 'anonymous';
+    if (!authRateLimiter.isAllowed(`signin_${clientId}`, 5, 300000)) { // 5 attempts per 5 minutes
+      const error = new Error('Muitas tentativas de login. Aguarde 5 minutos.');
+      toast({
+        title: "Limite excedido",
+        description: "Muitas tentativas de login. Aguarde 5 minutos e tente novamente.",
+        variant: "destructive"
+      });
+      return { error };
+    }
+
     // Input validation
-    if (!email || !email.includes('@')) {
+    if (!validateEmail(email)) {
       const error = new Error('Invalid email');
       toast({
         title: "Erro no login",
@@ -153,8 +187,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return { error };
     }
 
+    // Sanitize email
+    const sanitizedEmail = email.toLowerCase().trim();
+
     const { error } = await supabase.auth.signInWithPassword({
-      email: email.toLowerCase().trim(),
+      email: sanitizedEmail,
       password
     });
 
@@ -177,6 +214,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         description: errorMessage,
         variant: "destructive"
       });
+    } else {
+      // Reset rate limiter on successful login
+      authRateLimiter.reset(`signin_${clientId}`);
     }
 
     return { error };
@@ -206,7 +246,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;

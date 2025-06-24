@@ -1,16 +1,16 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Package, Plus, Lock } from "lucide-react";
+import { CreatorBundle } from "@/types/sales";
 
 interface CreatorBundlesProps {
   canCreateBundles: boolean;
 }
 
 const CreatorBundles = ({ canCreateBundles }: CreatorBundlesProps) => {
-  const [bundles] = useState<any[]>([]);
+  const [bundles] = useState<CreatorBundle[]>([]);
 
   if (!canCreateBundles) {
     return (

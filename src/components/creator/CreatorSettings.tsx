@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Settings, User, CreditCard, Globe } from "lucide-react";
 import { useCreator } from "@/hooks/useCreator";
+
+interface ProfileUpdateData {
+  bio: string;
+  social_links: Record<string, string>;
+  bank_details: Record<string, string>;
+}
 
 const CreatorSettings = () => {
   const { creatorProfile, updateProfile } = useCreator();
@@ -26,11 +31,12 @@ const CreatorSettings = () => {
 
   useEffect(() => {
     if (creatorProfile) {
-      const socialLinks = creatorProfile.social_links as any || {};
-      const bankDetails = creatorProfile.bank_details as any || {};
+      const profile = creatorProfile as Record<string, unknown>;
+      const socialLinks = (profile.social_links as Record<string, string>) || {};
+      const bankDetails = (profile.bank_details as Record<string, string>) || {};
       
       setProfileData({
-        bio: creatorProfile.bio || '',
+        bio: (profile.bio as string) || '',
         email: '',
         website: socialLinks.website || '',
         social_facebook: socialLinks.facebook || '',
@@ -61,11 +67,13 @@ const CreatorSettings = () => {
       pix_key: profileData.pix_key
     };
 
-    await updateProfile({
+    const updateData: ProfileUpdateData = {
       bio: profileData.bio,
       social_links,
       bank_details
-    });
+    };
+
+    await (updateProfile as (data: ProfileUpdateData) => Promise<void>)(updateData);
 
     setLoading(false);
   };
